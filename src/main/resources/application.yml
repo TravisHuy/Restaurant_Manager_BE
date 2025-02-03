@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb+srv://travishuy:travishuy@travishuy.2ak1k.mongodb.net/?retryWrites=true&w=majority&appName=travishuy
+      database: travishuy
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+          github:
+            client-id: ${GITHUB_CLIENT_ID}
+            client-secret: ${GITHUB_CLIENT_SECRET}
+            scope:
+              - user:email
+              - read:user
+
+jwt:
+  secret: TravisHuyJWTSuperSecretKey
+  expiration: 86400000
