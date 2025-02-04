@@ -13,6 +13,8 @@ public class User {
     @Id
     private String id;
     private String name;
+    private String email;
+    private String password;
     private String phoneNumber;
     private String address;
     private String avatar;
@@ -20,4 +22,10 @@ public class User {
     private AuthProvider provider;
     private String providerId;
     private Set<String> authorities;
+
+    public static void main(String[] args) {
+        User user = new User();
+        user.setName("Hồ Nhật Huy");
+        System.out.println(user);
+    }
 }
