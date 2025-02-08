@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+    @GetMapping("/status")
+    public ResponseEntity<?> getStatus() {
+        return ResponseEntity.ok("Auth service is running");
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> registerUser(@RequestBody SignUpRequest signUpRequest){
         return ResponseEntity.ok(authService.registerUser(signUpRequest));

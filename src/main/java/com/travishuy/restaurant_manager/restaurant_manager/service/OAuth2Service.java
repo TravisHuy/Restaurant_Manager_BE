@@ -25,7 +25,7 @@ public class OAuth2Service {
 
     private static final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
     private static final String GOOGLE_USER_INFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
-    private static final String GOOGLE_REDIRECT_URL= "http://localhost:8080/api/auth/oauth2/callback/google";
+    private static final String GOOGLE_REDIRECT_URL = "http://localhost:8080/api/auth/oauth2/callback/google";
 
     private static final String GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token";
     private static final String GITHUB_USER_INFO_URL = "https://api.github.com/user";

@@ -24,5 +24,5 @@ spring:
               - read:user
 
 jwt:
-  secret: TravisHuyJWTSuperSecretKey
-  expiration: 86400000
+  secret: Jfz8x!A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn
+  expiration: 86400000  # 24

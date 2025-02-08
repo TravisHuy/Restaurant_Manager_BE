@@ -31,6 +31,9 @@ public class AuthService {
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
+        user.setRole("USER");
         user.setProvider(AuthProvider.LOCAL);
 
         User savedUser = userRepository.save(user);
@@ -53,10 +56,12 @@ public class AuthService {
     public AuthResponse processOAuth2Login(String provider, String code){
         Oauth2UserInfo userInfo;
 
-        if("google".equals(provider)){
+        String providerStr = provider.toUpperCase();
+
+        if("GOOGLE".equals(providerStr)){
             userInfo = oAuth2Service.getGoogleUserInfo(code);
         }
-        else if ("github".equals(provider)){
+        else if ("GITHUB".equals(providerStr)){
             userInfo = oAuth2Service.getGithubUserInfo(code);
         }
         else{
