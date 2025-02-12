@@ -19,9 +19,7 @@ spring:
           github:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
-            scope:
-              - user:email
-              - read:user
+            scope: user:email
 
 jwt:
   secret: Jfz8x!A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn

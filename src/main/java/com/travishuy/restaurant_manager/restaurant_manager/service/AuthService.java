@@ -81,6 +81,7 @@ public class AuthService {
         user.setAvatar(userInfo.getImageUrl());
         user.setProvider(provider);
         user.setProviderId(userInfo.getId());
+        user.setRole("USER");
         return userRepository.save(user);
     }
 }
