@@ -2,6 +2,7 @@ package com.travishuy.restaurant_manager.restaurant_manager.service;
 
 import com.travishuy.restaurant_manager.restaurant_manager.jwt.JwtTokenProvider;
 import com.travishuy.restaurant_manager.restaurant_manager.model.AuthProvider;
+import com.travishuy.restaurant_manager.restaurant_manager.model.Role;
 import com.travishuy.restaurant_manager.restaurant_manager.model.User;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.Oauth2UserInfo;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.LoginRequest;
@@ -52,7 +53,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
-        user.setRole("USER");
+        user.setRole(Role.EMPLOYEE);
         user.setProvider(AuthProvider.LOCAL);
 
         User savedUser = userRepository.save(user);
@@ -117,7 +118,7 @@ public class AuthService {
         user.setAvatar(userInfo.getImageUrl());
         user.setProvider(provider);
         user.setProviderId(userInfo.getId());
-        user.setRole("USER");
+        user.setRole(Role.EMPLOYEE);
         return userRepository.save(user);
     }
 }

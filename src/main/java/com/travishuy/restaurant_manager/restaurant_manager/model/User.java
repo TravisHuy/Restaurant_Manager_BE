@@ -33,7 +33,7 @@ public class User {
     /** User's avatar image URL */
     private String avatar;
     /** User's role in the system */
-    private String role;
+    private Role role;
     /** User's authentication provider */
     private AuthProvider provider;
     /** User's provider id */

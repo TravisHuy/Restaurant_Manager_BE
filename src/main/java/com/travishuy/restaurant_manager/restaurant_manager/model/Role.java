@@ -9,5 +9,5 @@ package com.travishuy.restaurant_manager.restaurant_manager.model;
  * @author TravisHuy
  */
 public enum Role {
-    EMPLOYEE,ADMIN,CUSTOMER
+    MANAGER,EMPLOYEE,ADMIN
 }

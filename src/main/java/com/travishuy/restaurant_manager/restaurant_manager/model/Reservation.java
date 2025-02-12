@@ -28,8 +28,8 @@ public class Reservation {
     private LocalDateTime reservationTime;
     /** Number of guests expected*/
     private int numberOfPeople;
-    /** Reference to the customer who made the reservation */
-    private String customerId;
+    /** Customer phone number */
+    private String customerPhoneNumber;
     /** Reference to the reserved tables */
     private String tableId;
 }

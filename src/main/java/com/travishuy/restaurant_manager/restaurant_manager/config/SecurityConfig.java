@@ -73,6 +73,8 @@ public class SecurityConfig {
                                 "/**/*.css",
                                 "/**/*.js"
                         ).permitAll()
+                        .requestMatchers("/api/tables/add").hasAnyRole("ADMIN","MANAGER")
+                        .requestMatchers("/api/tables/alls").hasAnyRole("ADMIN", "MANAGER", "EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
