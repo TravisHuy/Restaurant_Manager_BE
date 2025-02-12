@@ -5,25 +5,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
- * Represents an order_items placed in the system.
- * This class maps to the "order_items" collection in MongoDB database.
+ * Represents a customer entity in the system.
+ * This class maps to the "customers" collection in MongoDB database.
  *
+ * @author Travis Huy
  * @version 0.1
  * @since 12-02-2025
- * @author Travis Huy
  */
-@Document(collection = "order_items")
+@Document(collection = "customers")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem {
-    /** Unique identifier for the order item*/
+public class Customer {
+    /** Unique identifier for the customer */
     @Id
     private String id;
-
-    private String orderId;
-    private String menuItemId;
-    private int quantity;
-
+    /** Customer's full name */
+    private String name;
+    /** Customer's phone number for contact */
+    private String phoneNumber;
 }

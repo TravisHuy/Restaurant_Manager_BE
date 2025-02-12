@@ -20,19 +20,39 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+/**
+ * Configures the security settings for the application.
+ *
+ * @version 0.1
+ * @since 04-02-2025
+ * @author TravisHuy
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-
+    /** The custom user details service */
     private final CustomUserDetailsService customUserDetailsService;
+    /** The JWT authentication filter */
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * Constructs a new SecurityConfig with the given parameters.
+     *
+     * @param customUserDetailsService the custom user details service
+     * @param jwtAuthenticationFilter the JWT authentication filter
+     */
     public SecurityConfig(CustomUserDetailsService customUserDetailsService, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
-
+    /**
+     * Configures the security filter chain for the application.
+     *
+     * @param http the HttpSecurity object to configure
+     * @return the SecurityFilterChain object
+     * @throws Exception if an error occurs while configuring the security filter chain
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -60,17 +80,32 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+    /**
+     * Creates a new PasswordEncoder bean.
+     *
+     * @return the PasswordEncoder bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
+    /**
+     * Creates a new AuthenticationManager bean.
+     *
+     * @param config the AuthenticationConfiguration object
+     * @return the AuthenticationManager bean
+     * @throws Exception if an error occurs while creating the AuthenticationManager bean
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Creates a new CorsConfigurationSource bean.
+     *
+     * @return the CorsConfigurationSource bean
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

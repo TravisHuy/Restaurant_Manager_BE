@@ -13,15 +13,34 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+/**
+ * Represents the service for the authentication.
+ * This class is used to authenticate the user.
+ *
+ * @version 0.1
+ * @since 04-02-2025
+ * @author TravisHuy
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthService {
+    /** The repository for the User model */
     private final UserRepository userRepository;
+    /** The encoder for the password */
     private final PasswordEncoder passwordEncoder;
+    /** The provider for the JWT token */
     private final JwtTokenProvider tokenProvider;
+    /** The manager for the authentication */
     private final AuthenticationManager authenticationManager;
+    /** The service for the OAuth2 */
     private final OAuth2Service oAuth2Service;
 
+    /**
+     * Registers a new user.
+     *
+     * @param request The request to register the user
+     * @return The response to the authentication request
+     */
     public AuthResponse registerUser(SignUpRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
             throw new RuntimeException("Email đã tồn tại");
@@ -41,7 +60,12 @@ public class AuthService {
 
         return new AuthResponse(token, "Đăng ký tài khoản thành công");
     }
-
+    /**
+     * Authenticates a user.
+     *
+     * @param request The request to authenticate the user
+     * @return The response to the authentication request
+     */
     public AuthResponse authenticateUser(LoginRequest request){
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(()-> new RuntimeException("User không tồn tại"));
 
@@ -52,7 +76,13 @@ public class AuthService {
         String token = tokenProvider.generateToken(user);
         return new AuthResponse(token,"Xác thực user thành công");
     }
-
+    /**
+     * Processes the OAuth2 login.
+     *
+     * @param provider The provider of the OAuth2
+     * @param code The code of the OAuth2
+     * @return The response to the authentication request
+     */
     public AuthResponse processOAuth2Login(String provider, String code){
         Oauth2UserInfo userInfo;
 
@@ -73,7 +103,13 @@ public class AuthService {
         String token = tokenProvider.generateToken(user);
         return new AuthResponse(token,"Đăng nhập thành công");
     }
-
+    /**
+     * Creates a new user with the OAuth2 information.
+     *
+     * @param userInfo The information of the user
+     * @param provider The provider of the OAuth2
+     * @return The user created
+     */
     private User createOAuth2User(Oauth2UserInfo userInfo, AuthProvider provider) {
         User user = new User();
         user.setName(userInfo.getName());

@@ -7,16 +7,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-
+/**
+ * A utility class that provides methods for generating and validating JWT tokens.
+ *
+ * @version 0.1
+ * @since 03-02-2025
+ * @author TravisHuy
+ */
 @Component
 public class JwtTokenProvider {
-
+    /** Secret key used to sign the JWT token */
     @Value("${jwt.secret}")
     private String jwtSecret;
-
+    /** Expiration time of the JWT token in milliseconds */
     @Value("${jwt.expiration}")
     private int jwtExpirationInMs;
 
+    /**
+     * Generates a JWT token for the given user.
+     *
+     * @param user the user to generate the token for
+     * @return the generated JWT token
+     */
     public String generateToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
@@ -30,7 +42,12 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .compact();
     }
-
+    /**
+     * Extracts the user ID from the JWT token.
+     *
+     * @param token the JWT token
+     * @return the user ID extracted from the token
+     */
     public String getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -39,7 +56,12 @@ public class JwtTokenProvider {
 
         return claims.getSubject();
     }
-
+    /**
+     * Validates the JWT token.
+     *
+     * @param authToken the JWT token to validate
+     * @return true if the token is valid, false otherwise
+     */
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
