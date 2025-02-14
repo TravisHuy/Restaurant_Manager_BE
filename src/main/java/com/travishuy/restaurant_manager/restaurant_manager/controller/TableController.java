@@ -37,7 +37,7 @@ public class TableController {
      */
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    public ResponseEntity<Table> addTable(@Valid @RequestBody TableDto tableDto) {
-        return ResponseEntity.ok(tableService.createTable(tableDto));
+    public ResponseEntity<Table> addTable(@Valid @RequestBody TableDto tableDto, @PathVariable String floorId) {
+        return ResponseEntity.ok(tableService.createTable(tableDto,floorId));
     }
 }

@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FloorRepository extends MongoRepository<Floor,String> {
     boolean existsByName(String name);
+    boolean existsById(String id);
 }

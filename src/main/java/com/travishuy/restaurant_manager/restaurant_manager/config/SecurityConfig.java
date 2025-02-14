@@ -62,7 +62,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/tables/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
-                        .requestMatchers("/api/tables/alls").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
+                        .requestMatchers("/api/tables/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
+                        .requestMatchers("/api/floors/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
+                        .requestMatchers("/api/floors/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)
