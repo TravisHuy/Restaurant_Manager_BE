@@ -33,4 +33,6 @@ public class Table {
     private List<String> orderIds;
     /** List of reservation ids associated with the table */
     private List<String> reservationIds;
+    /** Floor id of the table */
+    private String floorId;
 }
