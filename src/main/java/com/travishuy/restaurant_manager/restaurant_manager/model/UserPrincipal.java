@@ -7,6 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Represents a user principal in the system.
  * This class is used to represent the currently logged in user.
@@ -45,7 +48,9 @@ public class UserPrincipal implements UserDetails {
      * @return the created UserPrincipal
      */
     public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        Set<GrantedAuthority> authorities = user.getRole().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toSet());
 
         return new UserPrincipal(
                 user.getId(),
@@ -61,7 +66,7 @@ public class UserPrincipal implements UserDetails {
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
+        return authorities != null ? authorities : Collections.emptySet();
     }
     /**
      * Returns the unique identifier of the user.

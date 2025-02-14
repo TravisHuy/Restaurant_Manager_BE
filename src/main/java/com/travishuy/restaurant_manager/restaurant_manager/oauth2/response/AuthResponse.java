@@ -42,4 +42,25 @@ public class AuthResponse {
         this.message = message;
         this.token = token;
     }
+
+    /**
+     * Constructs a new AuthResponse with the given parameters.
+     *
+     * @param token The token of the user
+     * @param refreshToken The refresh token of the user
+     * @param message The message of the response
+     * @param email The email of the user
+     * @param role The role of the user
+     * @param name The name of the user
+     * @param id The id of the user
+     */
+    public AuthResponse(String token, String refreshToken, String message, String email, String role, String name, String id) {
+        this.token = token;
+        this.refreshToken = refreshToken;
+        this.message = message;
+        this.email = email;
+        this.role = role;
+        this.name = name;
+        this.id = id;
+    }
 }

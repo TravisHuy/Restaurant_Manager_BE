@@ -4,7 +4,9 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Represents a user entity in the system.
@@ -33,11 +35,18 @@ public class User {
     /** User's avatar image URL */
     private String avatar;
     /** User's role in the system */
-    private Role role;
+    private Set<Role> role;
     /** User's authentication provider */
     private AuthProvider provider;
     /** User's provider id */
     private String providerId;
-    /** User's authorities */
-    private Set<String> authorities;
+
+    public Set<String> getAuthorities() {
+        if(role == null){
+            return new HashSet<>();
+        }
+        return role.stream()
+                .map(Role::name)
+                .collect(Collectors.toSet());
+    }
 }

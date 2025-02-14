@@ -48,7 +48,9 @@ public class AuthController {
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> authenticateUser(@RequestBody LoginRequest loginRequest){
-        return ResponseEntity.ok(authService.authenticateUser(loginRequest));
+        AuthResponse authResponse = authService.authenticateUser(loginRequest);
+        System.out.println("Generated JWT: " + authResponse.getToken()); // Kiểm tra JWT
+        return ResponseEntity.ok(authResponse);
     }
     /**
      * Authenticates a user using OAuth2 provider

@@ -14,6 +14,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 /**
  * Represents the service for the authentication.
  * This class is used to authenticate the user.
@@ -53,13 +55,23 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setPhoneNumber(request.getPhoneNumber());
         user.setAddress(request.getAddress());
-        user.setRole(Role.EMPLOYEE);
+        user.setRole(Set.of(Role.ROLE_MANAGER));
         user.setProvider(AuthProvider.LOCAL);
 
         User savedUser = userRepository.save(user);
         String token = tokenProvider.generateToken(savedUser);
+        String refreshToken = tokenProvider.generateRefeshToken(savedUser);
 
-        return new AuthResponse(token, "Đăng ký tài khoản thành công");
+
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Đăng ký tài khoản thành công",
+                savedUser.getEmail(),
+                savedUser.getRole().toString(),
+                savedUser.getName(),
+                savedUser.getId()
+        );
     }
     /**
      * Authenticates a user.
@@ -75,7 +87,18 @@ public class AuthService {
         }
 
         String token = tokenProvider.generateToken(user);
-        return new AuthResponse(token,"Xác thực user thành công");
+        String refreshToken = tokenProvider.generateRefeshToken(user);
+
+
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Xác thực user thành công",
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getName(),
+                user.getId()
+        );
     }
     /**
      * Processes the OAuth2 login.
@@ -102,7 +125,18 @@ public class AuthService {
         User user = userRepository.findByEmail(userInfo.getEmail()).orElseGet(()-> createOAuth2User(userInfo,AuthProvider.valueOf(provider)));
 
         String token = tokenProvider.generateToken(user);
-        return new AuthResponse(token,"Đăng nhập thành công");
+        String refreshToken = tokenProvider.generateRefeshToken(user);
+
+
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Đăng nhập thành công",
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getName(),
+                user.getId()
+        );
     }
     /**
      * Creates a new user with the OAuth2 information.
@@ -118,7 +152,7 @@ public class AuthService {
         user.setAvatar(userInfo.getImageUrl());
         user.setProvider(provider);
         user.setProviderId(userInfo.getId());
-        user.setRole(Role.EMPLOYEE);
+        user.setRole(Set.of(Role.ROLE_EMPLOYEE));
         return userRepository.save(user);
     }
 }

@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -47,16 +48,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-
+            System.out.println("JWT from request: "+ jwt);
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 String userId = tokenProvider.getUserIdFromToken(jwt);
+
+                System.out.println("User ID from token: "+ userId);
                 UserDetails userDetails = customUserDetailsService.loadUserById(userId);
 
+                if(userDetails ==null){
+                    System.out.println("User not found for Id: "+userId);
+                    filterChain.doFilter(request, response);
+
+                    return ;
+                }
+
+                System.out.println("User authenticated: "+ userDetails.getUsername() +"_Role"+ userDetails.getAuthorities());
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+            else{
+                System.out.println("Invalid JWT or empty token");
             }
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);

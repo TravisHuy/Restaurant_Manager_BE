@@ -11,7 +11,7 @@ spring:
       client:
         registration:
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
+            client-id:  ${GOOGLE_CLIENT_ID}
             client-secret: ${GOOGLE_CLIENT_SECRET}
             scope:
               - email
@@ -22,5 +22,6 @@ spring:
             scope: user:email
 
 jwt:
-  secret: Jfz8x!A%D*G-KaPdSgVkYp3s6v9y$B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn
-  expiration: 86400000  # 24
+  secret: dBF9k6ffpPKOgylzlE6vV9gzIJz7bVjbdF3L5G8zWxhT9kY2mN4qRcX7pS8wQ1aH3jK5nM9tR6vU4bX7cE0iY2wQ5sG8mP3fD4vJ7kL9nB2mX5tA
+  expiration: 86400000  # 24 hours in milliseconds
+  refreshExpiration: 604800000  # 7 days in milliseconds
