@@ -9,6 +9,8 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -79,6 +81,11 @@ public class FloorService {
      * @throws IllegalArgumentException if floor not found
      */
     public Floor getFloorById(String id){
-        return floorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Floor not found"));
+        Floor floor = floorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Floor not found"));
+
+        List<Table> sortedTables = floor.getTables();
+        Collections.sort(sortedTables,(t1, t2) -> Integer.compare(t1.getNumber() , t2.getNumber()));
+        floor.setTables(sortedTables);
+        return floor;
     }
 }

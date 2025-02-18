@@ -21,12 +21,11 @@ import java.util.List;
 public class TableService {
     private final TableRepository tableRepository;
     private final FloorRepository floorRepository;
-    private final FloorService floorService;
 
-    public TableService(TableRepository tableRepository, FloorRepository floorRepository, FloorService floorService) {
+
+    public TableService(TableRepository tableRepository, FloorRepository floorRepository) {
         this.tableRepository = tableRepository;
         this.floorRepository = floorRepository;
-        this.floorService = floorService;
     }
 
     /**
@@ -37,14 +36,15 @@ public class TableService {
      * @throws IllegalArgumentException if table number already exists
      */
     public Table createTable(TableDto tableDTO,String floorId){
-
-        //check if table exist number already
-        if(tableRepository.existsByNumber(tableDTO.getNumber())){
-            throw new IllegalArgumentException("Table number already exists");
-        }
-
         //check if floor exist
         Floor floor = floorRepository.findById(floorId).orElseThrow(() -> new IllegalArgumentException("Floor not found"));
+
+        //check if table exist number already
+        boolean tableNumberExistExistsInFloor = floor.getTables().stream().anyMatch(table -> table.getNumber() == tableDTO.getNumber());
+
+        if(tableNumberExistExistsInFloor){
+            throw new IllegalArgumentException("Table number already exists");
+        }
 
         // Create a new table entity
         Table table = new Table();
