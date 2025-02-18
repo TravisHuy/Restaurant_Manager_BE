@@ -1,10 +1,19 @@
 package com.travishuy.restaurant_manager.restaurant_manager.model;
 
+import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.gridfs.GridFsCriteria;
+import org.springframework.data.mongodb.gridfs.GridFsTemplate;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+
 /**
  * Represents a menu item available in the restaurant.
  * This class maps to the "menu_items" collection in MongoDB database.
@@ -27,8 +36,11 @@ public class MenuItem {
     private String description;
     /** Price of the dish */
     private double price;
+    /**ObjectId reference to the image stored in GridFS */
+    private Object imageId;
     /** Category of the dish (e.g., appetizer, main course, dessert) */
     private String categoryId;
     /** Indicates if the item is currently available */
     private boolean available;
+
 }
