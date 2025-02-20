@@ -9,6 +9,6 @@ public class MenuItemDTO {
     private String description;
     private double price;
     private String categoryId;
-    private boolean available;
+    private boolean available = true;
     private MultipartFile image;
 }

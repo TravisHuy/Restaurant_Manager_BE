@@ -5,6 +5,8 @@ import com.travishuy.restaurant_manager.restaurant_manager.repository.CategoryRe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * Represents the service for the category.
  * This class is used to add category.
@@ -28,5 +30,13 @@ public class CategoryService {
         newCategory.setName(category.getName());
 
        return categoryRepository.save(newCategory);
+    }
+
+    public List<Category> getAllCategories(){
+        return categoryRepository.findAll();
+    }
+
+    public Category getCategoryById(String id){
+        return categoryRepository.findById(id).orElse(null);
     }
 }

@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Represents the service for the menu items.
@@ -45,6 +46,10 @@ public class MenuItemService {
 
         if(!categoryRepository.existsById(categoryId)){
             throw new IllegalArgumentException("Category not found");
+        }
+
+        if(menuItemRepository.existsByName(menuItemDTO.getName())){
+            throw new IllegalArgumentException("Menu item name already exists");
         }
 
         if(menuItemDTO.getImage() != null && !menuItemDTO.getImage().isEmpty()){
@@ -81,5 +86,15 @@ public class MenuItemService {
         return gridFsOperations.getResource(file).getInputStream().readAllBytes();
     }
 
+    public List<MenuItem> getAllMenuItems(){
+        return menuItemRepository.findAll();
+    }
+
+    public List<MenuItem> getMenuItemsByCategory(String categoryId){
+        if(!categoryRepository.existsById(categoryId)){
+            throw new IllegalArgumentException("Category not found");
+        }
+        return menuItemRepository.findByCategoryId(categoryId);
+    }
 
 }

@@ -12,11 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Controller class for handling menuItem requests
  *
  * @version 0.1
- * @since 14-02-2025
+ * @since 18-02-2025
  * @author TravisHuy
  */
 @RestController
@@ -33,10 +37,22 @@ public class MenuItemController {
      * @param categoryId the id of the category
      * @return ResponseEntity with the created menu item
      */
-    @PostMapping(value = "/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<MenuItem> creatMenuItem(@ModelAttribute MenuItemDTO menuItemDTO,@PathVariable String categoryId) throws IOException {
-        MenuItem createItem = menuItemService.createMenuItem(menuItemDTO,categoryId);
-        return new ResponseEntity<>(createItem, HttpStatus.CREATED);
+    @PostMapping(value = "/add/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> creatMenuItem(@ModelAttribute MenuItemDTO menuItemDTO,@PathVariable String categoryId) {
+        try {
+            MenuItem createItem = menuItemService.createMenuItem(menuItemDTO,categoryId);
+            return new ResponseEntity<>(createItem, HttpStatus.CREATED);
+        }
+        catch (IllegalArgumentException e){
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
+        catch (IOException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Failed to process image: " + e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
@@ -51,5 +67,22 @@ public class MenuItemController {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG);
         return new ResponseEntity<>(imageBytes,headers,HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<MenuItem>> getAllMenuItems() {
+        return ResponseEntity.ok(menuItemService.getAllMenuItems());
+    }
+
+    @GetMapping("/all/{categoryId}")
+    public ResponseEntity<?> getAllMenuItemsByCategory(@PathVariable String categoryId) {
+        try {
+            List<MenuItem> menuItems = menuItemService.getMenuItemsByCategory(categoryId);
+            return new ResponseEntity<>(menuItems, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        }
     }
 }

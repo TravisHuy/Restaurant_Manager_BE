@@ -2,11 +2,14 @@ package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
 import com.travishuy.restaurant_manager.restaurant_manager.model.Category;
 import com.travishuy.restaurant_manager.restaurant_manager.service.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
 /**
  * Controller class for handling category requests
  *
@@ -28,7 +31,27 @@ public class CategoryController {
      * @return ResponseEntity with the created category
      */
     @PostMapping("/add")
-    public ResponseEntity<Category> addCategory(Category category){
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<Category> addCategory(@Valid @RequestBody Category category){
         return ResponseEntity.ok(categoryService.addCategory(category));
+    }
+    /**
+     * Retrieves all categories in the system
+     *
+     * @return ResponseEntity with a list of all categories
+     */
+    @GetMapping("/all")
+    public ResponseEntity<List<Category>> getAllCategories(){
+        return ResponseEntity.ok(categoryService.getAllCategories());
+    }
+    /**
+     * Retrieves a category by its id
+     *
+     * @param id the id of the category
+     * @return ResponseEntity with the category
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getCategoryById(@PathVariable String id) {
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 }
