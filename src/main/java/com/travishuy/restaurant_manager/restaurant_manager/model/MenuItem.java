@@ -4,6 +4,7 @@ import com.mongodb.client.gridfs.model.GridFSFile;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -36,8 +37,8 @@ public class MenuItem {
     private String description;
     /** Price of the dish */
     private double price;
-    /**ObjectId reference to the image stored in GridFS */
-    private Object imageId;
+    /**Image data*/
+    private String imageData;
     /** Category of the dish (e.g., appetizer, main course, dessert) */
     private String categoryId;
     /** Indicates if the item is currently available */

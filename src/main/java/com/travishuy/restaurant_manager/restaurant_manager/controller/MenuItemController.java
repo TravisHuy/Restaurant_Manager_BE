@@ -1,20 +1,19 @@
 package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
 import com.travishuy.restaurant_manager.restaurant_manager.dto.MenuItemDTO;
-import com.travishuy.restaurant_manager.restaurant_manager.model.MenuItem;
 import com.travishuy.restaurant_manager.restaurant_manager.service.MenuItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Controller class for handling menuItem requests
@@ -31,58 +30,79 @@ public class MenuItemController {
     MenuItemService menuItemService;
 
     /**
-     * Adds a new menu item to the system
+     * Create a new menu item with an optional image
      *
-     * @param menuItemDTO the menu item to add
-     * @param categoryId the id of the category
-     * @return ResponseEntity with the created menu item
+     * @param menuItemDTO The menu item data
+     * @param imageFile Optional image file for the menu item
+     * @return The created menu item
+     *
      */
-    @PostMapping(value = "/add/{categoryId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> creatMenuItem(@ModelAttribute MenuItemDTO menuItemDTO,@PathVariable String categoryId) {
+    @PostMapping(value = "/add/{categoryId}",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<MenuItemDTO> createMenuItem(
+            @RequestPart("menuItem") MenuItemDTO menuItemDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile,
+            @PathVariable String categoryId
+    ) {
         try {
-            MenuItem createItem = menuItemService.createMenuItem(menuItemDTO,categoryId);
-            return new ResponseEntity<>(createItem, HttpStatus.CREATED);
-        }
-        catch (IllegalArgumentException e){
-            Map<String, String> response = new HashMap<>();
-            response.put("message", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-        catch (IOException e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Failed to process image: " + e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            MenuItemDTO createdItem = menuItemService.createMenuItem(menuItemDTO, imageFile,categoryId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdItem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     /**
-     * Retrieves an image of a menu item by its id
+     * Update an existing menu item
      *
-     * @param id the id of the menu item
-     * @return ResponseEntity with the image
+     * @param id The ID of the menu item to update
+     * @param menuItemDTO Updated menu item data
+     * @param imageFile Optional new image file
+     * @return The updated menu item
      */
-    @GetMapping("/{id}/image")
-    public ResponseEntity<byte[]> getMenuItemImage(@PathVariable String id) throws IOException {
-        byte[] imageBytes= menuItemService.getImage(id);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.IMAGE_JPEG);
-        return new ResponseEntity<>(imageBytes,headers,HttpStatus.OK);
+    @PutMapping(value = "/{id}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<MenuItemDTO> updateMenuItem(
+            @PathVariable String id,
+            @RequestPart("menuItem") MenuItemDTO menuItemDTO,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile
+    ) {
+        try {
+            MenuItemDTO updatedItem = menuItemService.updateMenuItem(id, menuItemDTO, imageFile);
+            return ResponseEntity.ok(updatedItem);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
+    /**
+     * Retrieves all menu items in the system
+     *
+     * @return ResponseEntity with a list of all menu items
+     */
     @GetMapping("/all")
-    public ResponseEntity<List<MenuItem>> getAllMenuItems() {
+    public ResponseEntity<?> getAllMenuItems() {
         return ResponseEntity.ok(menuItemService.getAllMenuItems());
     }
 
-    @GetMapping("/all/{categoryId}")
-    public ResponseEntity<?> getAllMenuItemsByCategory(@PathVariable String categoryId) {
-        try {
-            List<MenuItem> menuItems = menuItemService.getMenuItemsByCategory(categoryId);
-            return new ResponseEntity<>(menuItems, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", e.getMessage());
-            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-        }
-    }
+
+//    /**
+//     * Retrieves all menu items in the system by category
+//     *
+//     * @param categoryId the id of the category
+//     * @return ResponseEntity with a list of all menu items
+//     */
+//    @GetMapping("/all/{categoryId}")
+//    public ResponseEntity<?> getAllMenuItemsByCategory(@PathVariable String categoryId) {
+//        try {
+//            List<MenuItem> menuItems = menuItemService.getMenuItemsByCategory(categoryId);
+//            return new ResponseEntity<>(menuItems, HttpStatus.OK);
+//        } catch (IllegalArgumentException e) {
+//            Map<String, String> response = new HashMap<>();
+//            response.put("message", e.getMessage());
+//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//        }
+//    }
 }

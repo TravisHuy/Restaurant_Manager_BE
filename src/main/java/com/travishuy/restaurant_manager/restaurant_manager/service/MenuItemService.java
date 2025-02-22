@@ -11,11 +11,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.gridfs.GridFsOperations;
+import org.springframework.data.mongodb.gridfs.GridFsResource;
 import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Represents the service for the menu items.
@@ -41,8 +47,17 @@ public class MenuItemService {
     @Autowired
     GridFsOperations gridFsOperations;
 
-    public MenuItem createMenuItem(MenuItemDTO menuItemDTO,String categoryId) throws IOException {
-        ObjectId imageId = null;
+    /**
+     * Save a new menu item with image
+     * @param menuItemDTO
+     * @param imageFile
+     * @return
+     * @throws IOException
+     */
+    public MenuItemDTO createMenuItem(MenuItemDTO menuItemDTO,MultipartFile imageFile,String categoryId) throws IOException {
+
+       //Convert DTO to entity
+        MenuItem menuItem = menuItemDTO.toMenuItem();
 
         if(!categoryRepository.existsById(categoryId)){
             throw new IllegalArgumentException("Category not found");
@@ -52,49 +67,55 @@ public class MenuItemService {
             throw new IllegalArgumentException("Menu item name already exists");
         }
 
-        if(menuItemDTO.getImage() != null && !menuItemDTO.getImage().isEmpty()){
-            imageId = gridFsTemplate.store(
-                    menuItemDTO.getImage().getInputStream(),
-                    menuItemDTO.getImage().getOriginalFilename(),
-                    menuItemDTO.getImage().getContentType()
-            );
+        MenuItem savedMenuItem = menuItemRepository.save(menuItem);
+
+        // store the image in GridFS if an image is provided
+        if(imageFile != null && !imageFile.isEmpty()){
+            String imageBase64 = Base64.getEncoder().encodeToString(imageFile.getBytes());
+            savedMenuItem.setImageData(imageBase64);
+
+            savedMenuItem = menuItemRepository.save(savedMenuItem);
         }
 
-        // create a new MenuItem object
-        MenuItem menuItem = new MenuItem();
-        menuItem.setName(menuItemDTO.getName());
-        menuItem.setDescription(menuItemDTO.getDescription());
-        menuItem.setPrice(menuItemDTO.getPrice());
-        menuItem.setCategoryId(categoryId);
-        menuItem.setAvailable(menuItemDTO.isAvailable());
-        menuItem.setImageId(imageId);
-
-        return menuItemRepository.save(menuItem);
+        return MenuItemDTO.fromMenuItem(savedMenuItem);
     }
-    public byte[] getImage(String id) throws IOException {
-        MenuItem menuItem = menuItemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Menu item not found"));
 
-        if(menuItem.getImageId() == null) {
-            throw new IllegalArgumentException("Image not found for this menu item");
+    /**
+     * Update an existing menu item image
+     *
+     * @param id menu item dto
+     * @param menuItemDTO update menu item dto
+     * @param imageFile
+     * @return
+     * @throws IOException
+     */
+    public MenuItemDTO updateMenuItem(String id, MenuItemDTO menuItemDTO, MultipartFile imageFile) throws IOException {
+        MenuItem existingItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Menu item not found with id + " + id));
+
+        existingItem.setName(menuItemDTO.getName());
+        existingItem.setPrice(menuItemDTO.getPrice());
+        existingItem.setDescription(menuItemDTO.getDescription());
+        existingItem.setAvailable(menuItemDTO.isAvailable());
+        existingItem.setCategoryId(menuItemDTO.getCategoryId());
+
+
+        if(imageFile!=null && !imageFile.isEmpty()){
+            String imageBase64 = Base64.getEncoder().encodeToString(imageFile.getBytes());
+
+            existingItem.setImageData(imageBase64);
         }
-        GridFSFile file = gridFsTemplate.findOne(new Query(Criteria.where("_id").is(menuItem.getImageId())));
 
-        if(file == null) {
-            throw new IllegalArgumentException("Image file not found in GridFs");
-        }
+        MenuItem updateMenuItem = menuItemRepository.save(existingItem);
 
-        return gridFsOperations.getResource(file).getInputStream().readAllBytes();
+        return MenuItemDTO.fromMenuItem(updateMenuItem);
     }
 
-    public List<MenuItem> getAllMenuItems(){
-        return menuItemRepository.findAll();
+
+    public List<MenuItemDTO> getAllMenuItems(){
+        return menuItemRepository.findAll().stream()
+                .map(MenuItemDTO::fromMenuItem).collect(Collectors.toList());
     }
 
-    public List<MenuItem> getMenuItemsByCategory(String categoryId){
-        if(!categoryRepository.existsById(categoryId)){
-            throw new IllegalArgumentException("Category not found");
-        }
-        return menuItemRepository.findByCategoryId(categoryId);
-    }
 
 }
