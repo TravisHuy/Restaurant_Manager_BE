@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
+
 /**
  * Represents an order_items placed in the system.
  * This class maps to the "order_items" collection in MongoDB database.
@@ -21,9 +24,12 @@ public class OrderItem {
     /** Unique identifier for the order item*/
     @Id
     private String id;
-
-    private String orderId;
-    private String menuItemId;
+    private List<String> menuItemIds;
     private int quantity;
-
+    private double price;
+//    /**
+//     * Optional : indicates if this temp has been confirmed and saved to the database
+//     * Useful for distinguishing temporary items in session vs confirmed items.
+//     */
+//    private boolean isConfirmed = false;
 }

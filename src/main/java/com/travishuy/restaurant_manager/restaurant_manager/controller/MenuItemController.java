@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Controller class for handling menuItem requests
@@ -88,21 +89,25 @@ public class MenuItemController {
     }
 
 
-//    /**
-//     * Retrieves all menu items in the system by category
-//     *
-//     * @param categoryId the id of the category
-//     * @return ResponseEntity with a list of all menu items
-//     */
-//    @GetMapping("/all/{categoryId}")
-//    public ResponseEntity<?> getAllMenuItemsByCategory(@PathVariable String categoryId) {
-//        try {
-//            List<MenuItem> menuItems = menuItemService.getMenuItemsByCategory(categoryId);
-//            return new ResponseEntity<>(menuItems, HttpStatus.OK);
-//        } catch (IllegalArgumentException e) {
-//            Map<String, String> response = new HashMap<>();
-//            response.put("message", e.getMessage());
-//            return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-//        }
-//    }
+    /**
+     * Updates a menu item by adding a note.
+     *
+     * @param id   The ID of the menu item.
+     * @param note The note to be added.
+     * @return {@code ResponseEntity<MenuItemDTO>} if successful, otherwise returns an error response.
+     */
+    @PutMapping("/addNote/{id}")
+    public ResponseEntity<?> addNoteMenuItem(@PathVariable String id, @RequestParam String note) {
+        try {
+            MenuItemDTO menuItemDTO = menuItemService.addNoteMenuItem(id,note);
+            return ResponseEntity.ok(menuItemDTO);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", "An unexpected error occurred"));
+        }
+    }
 }

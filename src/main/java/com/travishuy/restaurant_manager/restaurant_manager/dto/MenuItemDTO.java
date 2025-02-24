@@ -13,6 +13,7 @@ public class MenuItemDTO {
     private String imageData;
     private String categoryId;
     private boolean available = true;
+    private String note;
 
     public static MenuItemDTO fromMenuItem(MenuItem menuItem){
         MenuItemDTO menuItemDTO = new MenuItemDTO();
@@ -23,6 +24,7 @@ public class MenuItemDTO {
         menuItemDTO.setImageData(menuItem.getImageData());
         menuItemDTO.setCategoryId(menuItem.getCategoryId());
         menuItemDTO.setAvailable(menuItem.isAvailable());
+        menuItemDTO.setNote(menuItem.getNote());
         return menuItemDTO;
     }
 
@@ -35,6 +37,7 @@ public class MenuItemDTO {
         menuItem.setImageData(this.getImageData());
         menuItem.setCategoryId(this.getCategoryId());
         menuItem.setAvailable(this.isAvailable());
+        menuItem.setNote(this.getNote());
 
         return menuItem;
     }
