@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/category/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
                         .requestMatchers("/api/menu-items/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                         .requestMatchers("/api/menu-items/**").permitAll()
+                        .requestMatchers("/api/orders/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

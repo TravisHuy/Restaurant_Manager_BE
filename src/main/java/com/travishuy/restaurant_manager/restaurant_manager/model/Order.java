@@ -33,11 +33,11 @@ public class Order {
     private String invoiceId ;
     /** List of items ordered */
     private List<String> orderItemIds = new ArrayList<>();
-    /**
-     * Temporary list of order items before confirmation.
-     * This is not persisted to the database and is used only in session.
-     */
-    private transient List<OrderItem> tempOrderItems = new ArrayList<>();
+//    /**
+//     * Temporary list of order items before confirmation.
+//     * This is not persisted to the database and is used only in session.
+//     */
+//    private transient List<OrderItem> tempOrderItems = new ArrayList<>();
     /** Time when the order was placed */
     private LocalDateTime orderItem;
     /** Current status of the order (e.g.,PENDING,IN_PROCESS,COMPLETED) */
