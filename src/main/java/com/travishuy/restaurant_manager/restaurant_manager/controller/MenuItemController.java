@@ -89,25 +89,5 @@ public class MenuItemController {
     }
 
 
-    /**
-     * Updates a menu item by adding a note.
-     *
-     * @param id   The ID of the menu item.
-     * @param note The note to be added.
-     * @return {@code ResponseEntity<MenuItemDTO>} if successful, otherwise returns an error response.
-     */
-    @PutMapping("/addNote/{id}")
-    public ResponseEntity<?> addNoteMenuItem(@PathVariable String id, @RequestParam String note) {
-        try {
-            MenuItemDTO menuItemDTO = menuItemService.addNoteMenuItem(id,note);
-            return ResponseEntity.ok(menuItemDTO);
-        }
-        catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-        catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of("error", "An unexpected error occurred"));
-        }
-    }
+
 }

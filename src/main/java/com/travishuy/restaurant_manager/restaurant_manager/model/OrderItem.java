@@ -24,12 +24,19 @@ public class OrderItem {
     /** Unique identifier for the order item*/
     @Id
     private String id;
-    private List<String> menuItemIds;
-    private int quantity;
-    private double price;
-//    /**
-//     * Optional : indicates if this temp has been confirmed and saved to the database
-//     * Useful for distinguishing temporary items in session vs confirmed items.
-//     */
-//    private boolean isConfirmed = false;
+    private List<OrderItemDetail> menuItemIds;
+    private double totalPrice;
+    private String note;
+
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class OrderItemDetail {
+        private String menuItemId;
+        private String menuItemName;
+        private int quantity;
+        private double price;
+    }
+
 }

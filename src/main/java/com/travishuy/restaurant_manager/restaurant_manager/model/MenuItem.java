@@ -43,6 +43,4 @@ public class MenuItem {
     private String categoryId;
     /** Indicates if the item is currently available */
     private boolean available;
-    /** Most note */
-    private String note;
 }

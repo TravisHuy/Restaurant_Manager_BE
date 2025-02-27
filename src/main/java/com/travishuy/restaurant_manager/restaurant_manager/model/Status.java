@@ -10,5 +10,5 @@ package com.travishuy.restaurant_manager.restaurant_manager.model;
  * @author TravisHuy
  */
 public enum Status {
-    PENDING,IN_PROCESS,COMPLETED
+    PENDING,IN_PROCESS,COMPLETED,CANCELLED
 }

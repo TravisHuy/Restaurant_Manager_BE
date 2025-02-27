@@ -98,7 +98,6 @@ public class MenuItemService {
         existingItem.setDescription(menuItemDTO.getDescription());
         existingItem.setAvailable(menuItemDTO.isAvailable());
         existingItem.setCategoryId(menuItemDTO.getCategoryId());
-        existingItem.setNote(menuItemDTO.getNote());
 
         if(imageFile!=null && !imageFile.isEmpty()){
             String imageBase64 = Base64.getEncoder().encodeToString(imageFile.getBytes());
@@ -115,19 +114,6 @@ public class MenuItemService {
     public List<MenuItemDTO> getAllMenuItems(){
         return menuItemRepository.findAll().stream()
                 .map(MenuItemDTO::fromMenuItem).collect(Collectors.toList());
-    }
-
-    /**
-     * Adds note to an existing add menu item
-     * @param id   The ID of the menu item.
-     * @param note The note to be added to the menu item.
-     * @return A {@code MenuItemDTO} representing the updated menu item.
-     * @throws IllegalArgumentException If no menu item is found with the given ID.
-     */
-    public MenuItemDTO addNoteMenuItem(String id,String note){
-        MenuItem existingItem = menuItemRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Menu item not found with id: " +id));
-        existingItem.setNote(note);
-        return MenuItemDTO.fromMenuItem(menuItemRepository.save(existingItem));
     }
 
 }
