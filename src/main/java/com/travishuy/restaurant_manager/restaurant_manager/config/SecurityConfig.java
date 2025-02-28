@@ -70,6 +70,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/menu-items/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                         .requestMatchers("/api/menu-items/**").permitAll()
                         .requestMatchers("/api/orders/**").permitAll()
+                        .requestMatchers("/api/reservations/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

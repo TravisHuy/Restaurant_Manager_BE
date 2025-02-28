@@ -31,4 +31,10 @@ public class OrderController {
         OrderResponse createdOrder = orderService.createOrder(orderRequest);
         return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
+    @GetMapping("/customerName/{tableId}")
+    public ResponseEntity<String> getCustomerNameForTable(@PathVariable String tableId){
+        return orderService.getCustomerName(tableId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

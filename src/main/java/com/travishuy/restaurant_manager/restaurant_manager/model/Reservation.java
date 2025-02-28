@@ -24,12 +24,12 @@ public class Reservation {
     /** Unique identifier for the reservation */
     @Id
     private String id;
-    /** Scheduled date and time for the reservation*/
-    private LocalDateTime reservationTime;
+    /** Reference to the reserved tables */
+    private String tableId;
     /** Number of guests expected*/
     private int numberOfPeople;
     /** Customer phone number */
-    private String customerPhoneNumber;
-    /** Reference to the reserved tables */
-    private String tableId;
+    private String customerName;
+    /** Scheduled date and time for the reservation*/
+    private LocalDateTime reservationTime;
 }

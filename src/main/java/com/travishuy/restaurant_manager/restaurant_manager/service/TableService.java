@@ -50,9 +50,9 @@ public class TableService {
         Table table = new Table();
         table.setNumber(tableDTO.getNumber());
         table.setCapacity(tableDTO.getCapacity());
-        table.setAvailable(tableDTO.isAvailable());
-        table.setOrderIds(new ArrayList<>());
-        table.setReservationIds(new ArrayList<>());
+        table.setAvailable(true);
+        table.setOrderId("");
+        table.setReservationId("");
         table.setFloorId(floorId);
 
         Table saveTable = tableRepository.save(table);

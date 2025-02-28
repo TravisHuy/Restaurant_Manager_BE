@@ -5,7 +5,9 @@ import com.travishuy.restaurant_manager.restaurant_manager.model.Status;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Repository interface for managing order entities
@@ -16,6 +18,6 @@ import java.util.List;
  */
 @Repository
 public interface OrderRepository extends MongoRepository<Order,String> {
-    List<Order> findByTableId(String tableId);
     List<Order> findByStatus(Status status);
+    Optional<Order> findByTableId(String tableId);
 }

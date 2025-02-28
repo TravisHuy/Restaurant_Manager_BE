@@ -20,5 +20,5 @@ public class TableDto {
     /** Table capacity */
     private int capacity;
     /** Availability status of the table is true*/
-    private boolean available = true;
+    private boolean available;
 }

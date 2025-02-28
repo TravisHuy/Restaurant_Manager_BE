@@ -30,9 +30,9 @@ public class Table {
     /** Availability status of the table */
     private boolean available;
     /** List of order ids associated with the table */
-    private List<String> orderIds;
+    private String orderId;
     /** List of reservation ids associated with the table */
-    private List<String> reservationIds;
+    private String reservationId;
     /** Floor id of the table */
     private String floorId;
 }

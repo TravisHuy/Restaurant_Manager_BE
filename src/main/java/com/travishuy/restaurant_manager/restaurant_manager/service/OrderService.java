@@ -30,4 +30,5 @@ import java.util.Optional;
 @Service
 public interface OrderService {
     OrderResponse  createOrder(OrderRequest orderRequest);
+    Optional<String> getCustomerName(String tableId);
 }
