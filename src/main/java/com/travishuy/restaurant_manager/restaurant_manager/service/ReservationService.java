@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 /**
  * Service class for managing Reservation entities
@@ -33,7 +34,10 @@ public class ReservationService {
             throw  new IllegalArgumentException("The table is reserved");
         }
 
-
+        if(table.getCapacity()  <  reservationDTO.getNumberOfPeople()) {
+            throw new IllegalArgumentException("Table capacity is not sufficient for " +
+                    reservationDTO.getNumberOfPeople() + " people");
+        }
         Reservation reservation = new Reservation();
 
         reservation.setTableId(tableId);
@@ -50,4 +54,60 @@ public class ReservationService {
 
         return reservation;
     }
+
+
+    /**
+     * check if a table is already reserved
+     *
+     * @param tableId ID of the table to check
+     * @return true if the table is reserved, false otherwise
+     */
+    public boolean isTableReserved(String tableId){
+        Optional<Table> tableOptional = tableRepository.findById(tableId);
+        if(tableOptional.isPresent()){
+            return !tableOptional.get().isAvailable();
+        }
+        throw new IllegalArgumentException("Table not found with ID: "+ tableId);
+    }
+
+    /**
+     * gets the active reservation for a table
+     *
+     * @param tableId ID of the table
+     * @return the reservation if exists
+     */
+    public Reservation getTableReservation(String tableId){
+        Table table = tableRepository.findById(tableId)
+                .orElseThrow(() -> new IllegalArgumentException("table not found"));
+
+        if(table.getReservationId() !=null && !table.getReservationId().isEmpty()){
+            return reservationRepository.findById(table.getReservationId())
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    /**
+     * Cancels a reservation and makes the table available again
+     *
+     * @param reservationId ID of the reservation to cancel
+     * @return the canceled reservation
+     */
+    public Reservation cancelReservation(String reservationId){
+        Reservation reservation = reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found"));
+
+        // Get the table and make it available again
+        Table table = tableRepository.findById(reservation.getTableId())
+                .orElseThrow(() -> new IllegalArgumentException("Table not found"));
+
+        table.setAvailable(true);
+        table.setReservationId("");
+        tableRepository.save(table);
+
+        reservationRepository.delete(reservation);
+
+        return reservation;
+    }
+
 }

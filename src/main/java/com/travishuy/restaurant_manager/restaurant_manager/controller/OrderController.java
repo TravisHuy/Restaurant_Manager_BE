@@ -2,6 +2,7 @@ package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
 import com.travishuy.restaurant_manager.restaurant_manager.model.Order;
 import com.travishuy.restaurant_manager.restaurant_manager.model.OrderItem;
+import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderItemRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.OrderResponse;
 import com.travishuy.restaurant_manager.restaurant_manager.service.OrderService;
@@ -36,5 +37,17 @@ public class OrderController {
         return orderService.getCustomerName(tableId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    @PostMapping("/addItems/{orderId}")
+    public ResponseEntity<?> addItemToOrder(
+            @PathVariable String orderId,
+            @RequestBody List<OrderItemRequest> newItems){
+        try{
+            OrderResponse response = orderService.addItemsOrder(orderId, newItems);
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

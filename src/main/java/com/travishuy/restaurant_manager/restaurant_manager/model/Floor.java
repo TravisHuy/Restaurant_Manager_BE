@@ -16,5 +16,5 @@ public class Floor {
     @Id
     private String id;
     private String name;
-    private List<Table> tables;
+    private List<String> tableIds;
 }

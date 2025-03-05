@@ -35,12 +35,12 @@ public class FloorService {
      * @throws IllegalArgumentException if floor name already exists
      */
     public Floor createFloor(Floor floor){
-        if(!floorRepository.existsByName(floor.getName())){
+        if(floorRepository.existsByName(floor.getName())){
             throw new IllegalArgumentException("Floor name already exists");
         }
         Floor newFloor = new Floor();
         newFloor.setName(floor.getName());
-        newFloor.setTables(new ArrayList<>());
+        newFloor.setTableIds(new ArrayList<>());
 
         return floorRepository.save(newFloor);
     }
@@ -61,7 +61,7 @@ public class FloorService {
 
         tableRepository.save(table);
 
-        floor.getTables().removeIf(t->t.getId().equals(tableId));
+        floor.getTableIds().removeIf(id -> id.equals(tableId));
 
         return floorRepository.save(floor);
     }
@@ -81,11 +81,13 @@ public class FloorService {
      * @throws IllegalArgumentException if floor not found
      */
     public Floor getFloorById(String id){
-        Floor floor = floorRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Floor not found"));
+        Floor floor = floorRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Floor not found"));
 
-        List<Table> sortedTables = floor.getTables();
-        Collections.sort(sortedTables,(t1, t2) -> Integer.compare(t1.getNumber() , t2.getNumber()));
-        floor.setTables(sortedTables);
+        List<Table> tables = tableRepository.findAllById(floor.getTableIds());
+        tables.sort((t1, t2) -> Integer.compare(t1.getNumber(), t2.getNumber()));
+
+        floor.setTableIds(tables.stream().map(Table::getId).toList());
         return floor;
     }
 }

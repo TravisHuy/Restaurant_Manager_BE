@@ -3,6 +3,7 @@ package com.travishuy.restaurant_manager.restaurant_manager.service;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Order;
 import com.travishuy.restaurant_manager.restaurant_manager.model.OrderItem;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Status;
+import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderItemRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.OrderResponse;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.OrderItemRepository;
@@ -31,4 +32,5 @@ import java.util.Optional;
 public interface OrderService {
     OrderResponse  createOrder(OrderRequest orderRequest);
     Optional<String> getCustomerName(String tableId);
+    OrderResponse addItemsOrder(String orderId, List<OrderItemRequest> newItems);
 }

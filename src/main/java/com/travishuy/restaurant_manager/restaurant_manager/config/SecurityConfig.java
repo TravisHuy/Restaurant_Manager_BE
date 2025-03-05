@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/tables/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
-                        .requestMatchers("/api/tables/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
+                        .requestMatchers("/api/tables/**").permitAll()
                         .requestMatchers("/api/floors/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                         .requestMatchers("/api/floors/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
                         .requestMatchers("/api/category/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")

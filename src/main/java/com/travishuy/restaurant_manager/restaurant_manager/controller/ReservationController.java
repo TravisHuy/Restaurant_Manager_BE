@@ -25,14 +25,26 @@ public class ReservationController {
     ReservationService reservationService;
 
     @PostMapping("/add/{tableId}")
-    public ResponseEntity<Reservation> addReservation(
+    public ResponseEntity<?> addReservation(
             @PathVariable String tableId, @RequestBody ReservationDTO reservationDTO
             ){
         try{
             return ResponseEntity.ok(reservationService.addReservation(tableId,reservationDTO));
         }
         catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/check/{tableId}")
+    public ResponseEntity<?> checkTableReservation(@PathVariable String tableId){
+        try {
+            boolean isReserved = reservationService.isTableReserved(tableId);
+            return ResponseEntity.ok(isReserved);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
 }

@@ -57,14 +57,10 @@ public class OrderServiceImpl implements OrderService{
         Table table = tableRepository.findById(orderRequest.getTableId()).orElseThrow(
                 () -> new RuntimeException("Table not found with ID: "+ orderRequest.getTableId())
         );
-        table.setAvailable(false);
 
-        List<String> currentOrderIds = table.getOrderIds();
-        if(currentOrderIds == null) {
-            currentOrderIds = new ArrayList<>();
-        }
-        currentOrderIds.add(savedOrder.getId());
-        table.setOrderIds(currentOrderIds);
+        table.setAvailable(false);
+        table.setOrderId(savedOrder.getId());
+
         tableRepository.save(table);
 
         return mapToOrderResponse(savedOrder);
@@ -150,5 +146,67 @@ public class OrderServiceImpl implements OrderService{
     public Optional<String> getCustomerName(String tableId){
         return orderRepository.findByTableId(tableId)
                 .map(Order::getCustomerName);
+    }
+
+    @Override
+    public OrderResponse addItemsOrder(String orderId, List<OrderItemRequest> newItems) {
+        Order existingOrder = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+
+        List<String> newOrderItemIds= new ArrayList<>();
+        double additionalAmount = 0.0;
+        for(OrderItemRequest itemRequest: newItems){
+            OrderItem orderItem = createOrderItemFromRequestPlus(itemRequest);
+            OrderItem savedOrderItem = orderItemRepository.save(orderItem);
+
+            newOrderItemIds.add(savedOrderItem.getId());
+            additionalAmount += savedOrderItem.getTotalPrice();
+        }
+
+        existingOrder.getOrderItemIds().addAll(newOrderItemIds);
+        existingOrder.setTotalAmount(existingOrder.getTotalAmount() + additionalAmount);
+
+        Order updateOrder = orderRepository.save(existingOrder);
+
+        return mapToOrderResponse(updateOrder);
+    }
+    private OrderItem createOrderItemFromRequestPlus(OrderItemRequest itemRequest){
+        if(itemRequest.getMenuItems() == null || itemRequest.getMenuItems().isEmpty()){
+            throw new RuntimeException("Order item must contain at least one menu item");
+        }
+        List<OrderItem.OrderItemDetail> orderItemDetails = new ArrayList<>();
+        double totalPrice = 0.0;
+
+        for(MenuItemRequest menuItemRequest : itemRequest.getMenuItems()){
+            if(menuItemRequest.getQuantity() <=0){
+                throw new RuntimeException("Quantity must be greater than 0");
+            }
+
+            MenuItem menuItem = menuItemRepository.findById(menuItemRequest.getMenuItemId()).orElseThrow(
+                    () -> new RuntimeException("MenuItem not found with ID: "+menuItemRequest.getMenuItemId())
+            );
+
+            if(!menuItem.isAvailable()){
+                throw new RuntimeException("Menu is not available: "+menuItem.getName());
+            }
+
+            double itemPrice = menuItem.getPrice() * menuItemRequest.getQuantity();
+            totalPrice += itemPrice;
+
+            OrderItem.OrderItemDetail detail = new OrderItem.OrderItemDetail(
+                    menuItem.getId(),
+                    menuItem.getName(),
+                    menuItemRequest.getQuantity(),
+                    itemPrice
+            );
+
+            orderItemDetails.add(detail);
+        }
+
+        OrderItem orderItem = new OrderItem();
+        orderItem.setMenuItemIds(orderItemDetails);
+        orderItem.setTotalPrice(totalPrice);
+        orderItem.setNote(itemRequest.getNote());
+
+        return orderItem;
     }
 }

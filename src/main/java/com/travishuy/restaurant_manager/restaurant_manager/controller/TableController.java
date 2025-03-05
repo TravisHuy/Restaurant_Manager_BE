@@ -35,9 +35,36 @@ public class TableController {
      * @param tableDto the table data transfer object containing table details
      * @return ResponseEntity with the created table
      */
-    @PostMapping("/add")
+    @PostMapping("/add/{floorId}")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
-    public ResponseEntity<Table> addTable(@Valid @RequestBody TableDto tableDto, @PathVariable String floorId) {
-        return ResponseEntity.ok(tableService.createTable(tableDto,floorId));
+    public ResponseEntity<?> addTable(@Valid @RequestBody TableDto tableDto, @PathVariable String floorId) {
+        try {
+            return ResponseEntity.ok(tableService.createTable(tableDto,floorId));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/check/{tableId}")
+    public ResponseEntity<?> checkTableReservation(@PathVariable String tableId){
+        try {
+            boolean isReserved = tableService.isTableReserved(tableId);
+            return ResponseEntity.ok(isReserved);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/byFloor/{floorId}")
+    public ResponseEntity<?> getTableByFloorId(@PathVariable String floorId){
+        try {
+            List<Table> tables = tableService.getTablesFloorById(floorId);
+            return ResponseEntity.ok(tables);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

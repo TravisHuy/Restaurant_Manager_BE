@@ -20,4 +20,5 @@ public interface TableRepository extends MongoRepository<Table, String> {
      * @return true if the table exists, false otherwise
      */
     boolean existsByNumber(int number);
+
 }
