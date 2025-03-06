@@ -50,4 +50,24 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllOrders(){
+        try{
+            List<Order> response = orderService.getAllOrders();
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/{orderId}")
+    public ResponseEntity<?> getOrderById(@PathVariable String orderId){
+        try{
+            Order response = orderService.getOrderId(orderId);
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -61,6 +61,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/orders/**").permitAll()
                         .requestMatchers("/api/tables/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                         .requestMatchers("/api/tables/**").permitAll()
                         .requestMatchers("/api/floors/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
@@ -69,7 +70,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/category/**").hasAnyAuthority("ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EMPLOYEE")
                         .requestMatchers("/api/menu-items/add").hasAnyAuthority("ROLE_ADMIN","ROLE_MANAGER")
                         .requestMatchers("/api/menu-items/**").permitAll()
-                        .requestMatchers("/api/orders/**").permitAll()
                         .requestMatchers("/api/reservations/**").permitAll()
                         .anyRequest().authenticated()
                 )

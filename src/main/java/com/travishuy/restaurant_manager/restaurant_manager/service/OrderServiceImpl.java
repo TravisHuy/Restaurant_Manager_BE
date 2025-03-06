@@ -169,6 +169,7 @@ public class OrderServiceImpl implements OrderService{
 
         return mapToOrderResponse(updateOrder);
     }
+
     private OrderItem createOrderItemFromRequestPlus(OrderItemRequest itemRequest){
         if(itemRequest.getMenuItems() == null || itemRequest.getMenuItems().isEmpty()){
             throw new RuntimeException("Order item must contain at least one menu item");
@@ -209,4 +210,31 @@ public class OrderServiceImpl implements OrderService{
 
         return orderItem;
     }
+    @Override
+    public List<Order> getAllOrders() {
+        try {
+            List<Order> orders = orderRepository.findAll();
+            return orders;
+        }
+        catch (Exception e){
+            throw new RuntimeException("Failed to retrieve orders: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public Order getOrderId(String orderId) {
+        try {
+            if (orderId == null || orderId.trim().isEmpty()) {
+                throw new IllegalArgumentException("Order ID cannot be null or empty");
+            }
+
+            return orderRepository.findById(orderId)
+                    .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve order: " + e.getMessage(), e);
+        }
+    }
+
 }

@@ -33,4 +33,8 @@ public interface OrderService {
     OrderResponse  createOrder(OrderRequest orderRequest);
     Optional<String> getCustomerName(String tableId);
     OrderResponse addItemsOrder(String orderId, List<OrderItemRequest> newItems);
+    /** retrieves all orders in the stream */
+    List<Order> getAllOrders();
+    /** retrieves a specific order by its ID */
+    Order getOrderId(String orderId);
 }
