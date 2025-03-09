@@ -1,0 +1,35 @@
+package com.travishuy.restaurant_manager.restaurant_manager.controller;
+
+import com.travishuy.restaurant_manager.restaurant_manager.model.PaymentMethod;
+import com.travishuy.restaurant_manager.restaurant_manager.service.InvoiceService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/invoices")
+public class InvoiceController {
+
+    @Autowired
+    InvoiceService invoiceService;
+
+    @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<?> createInvoice(@RequestBody Map<String,Object> payload){
+        try {
+            String orderId = (String) payload.get("orderId");
+            double totalAmount = (double) payload.get("totalAmount");
+            PaymentMethod paymentMethod = PaymentMethod.valueOf((String) payload.get("paymentMethod"));
+            return ResponseEntity.ok(invoiceService.createInvoice(orderId, totalAmount, paymentMethod));
+        }catch (IllegalArgumentException | IllegalStateException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+}

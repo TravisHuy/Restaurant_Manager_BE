@@ -1,13 +1,11 @@
 package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
+import com.travishuy.restaurant_manager.restaurant_manager.dto.OrderItemDTO;
 import com.travishuy.restaurant_manager.restaurant_manager.model.OrderItem;
 import com.travishuy.restaurant_manager.restaurant_manager.service.OrderItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,17 +25,17 @@ public class OrderItemController {
     @GetMapping("/getOrderItemById/{orderItemId}")
     public ResponseEntity<?> getOrderItemById(@PathVariable String orderItemId){
         try {
-            OrderItem orderItem = orderItemService.getByOrderItemId(orderItemId);
+            OrderItemDTO orderItem = orderItemService.getByOrderItemId(orderItemId);
             return ResponseEntity.ok(orderItem);
         }
         catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/getOrderItemsByIds/{orderItemIds}")
-    public ResponseEntity<?> getListOrderItem(@PathVariable List<String> orderItemIds){
+    @GetMapping("/getOrderItemsByIds")
+    public ResponseEntity<?> getListOrderItem(@RequestParam List<String> orderItemIds){
         try {
-            List<OrderItem> orderItems = orderItemService.getOrderItemByIds(orderItemIds);
+            List<OrderItemDTO> orderItems = orderItemService.getOrderItemByIds(orderItemIds);
             return ResponseEntity.ok(orderItems);
         }
         catch (RuntimeException e){

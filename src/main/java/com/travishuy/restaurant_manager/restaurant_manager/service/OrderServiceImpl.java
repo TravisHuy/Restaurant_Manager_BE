@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService{
         order.setTableId(orderRequest.getTableId());
         order.setOrderItemIds(Collections.singletonList(savedOrderItem.getId()));
         order.setOrderTime(LocalDateTime.now());
-        order.setStatus(Status.IN_PROCESS);
+        order.setStatus(Status.PENDING);
         order.setTotalAmount(savedOrderItem.getTotalPrice());
 
         Order savedOrder = orderRepository.save(order);
