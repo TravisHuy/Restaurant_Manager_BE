@@ -20,7 +20,7 @@ public class InvoiceController {
     @Autowired
     InvoiceService invoiceService;
 
-    @PostMapping
+    @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     public ResponseEntity<?> createInvoice(@RequestBody Map<String,Object> payload){
         try {
@@ -29,7 +29,7 @@ public class InvoiceController {
             PaymentMethod paymentMethod = PaymentMethod.valueOf((String) payload.get("paymentMethod"));
             return ResponseEntity.ok(invoiceService.createInvoice(orderId, totalAmount, paymentMethod));
         }catch (IllegalArgumentException | IllegalStateException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 }

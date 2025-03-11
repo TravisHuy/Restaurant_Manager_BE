@@ -70,4 +70,14 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    @PostMapping("/updateStatus/{orderId}")
+    public ResponseEntity<?> updateOrderStatus(@PathVariable String orderId){
+        try{
+            OrderResponse response = orderService.updateOrderStatus(orderId);
+            return ResponseEntity.ok(response);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }

@@ -72,6 +72,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/menu-items/**").permitAll()
                         .requestMatchers("/api/reservations/**").permitAll()
                         .requestMatchers("/api/orderItems/**").permitAll()
+                        .requestMatchers("/api/invoices/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

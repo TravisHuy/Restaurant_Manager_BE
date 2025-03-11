@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService{
         order.setTableId(orderRequest.getTableId());
         order.setOrderItemIds(Collections.singletonList(savedOrderItem.getId()));
         order.setOrderTime(LocalDateTime.now());
-        order.setStatus(Status.PENDING);
+        order.setStatus(Status.IN_PROCESS);
         order.setTotalAmount(savedOrderItem.getTotalPrice());
 
         Order savedOrder = orderRepository.save(order);
@@ -236,5 +236,28 @@ public class OrderServiceImpl implements OrderService{
             throw new RuntimeException("Failed to retrieve order: " + e.getMessage(), e);
         }
     }
+
+    @Override
+    public OrderResponse updateOrderStatus(String orderId) {
+        try {
+            if(orderId == null || orderId.trim().isEmpty()){
+                throw new IllegalArgumentException("Order ID cannot be null or empty");
+            }
+
+            Order order = orderRepository.findById(orderId)
+                    .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+
+            order.setStatus(Status.COMPLETED);
+
+            return mapToOrderResponse(orderRepository.save(order));
+        }
+        catch (IllegalArgumentException e){
+            throw  e;
+        }
+        catch(Exception e){
+            throw new RuntimeException("Failed to update order status: " + e.getMessage(), e);
+        }
+    }
+
 
 }

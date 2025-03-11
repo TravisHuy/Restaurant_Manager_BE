@@ -37,4 +37,5 @@ public interface OrderService {
     List<Order> getAllOrders();
     /** retrieves a specific order by its ID */
     Order getOrderId(String orderId);
+    OrderResponse updateOrderStatus(String orderId);
 }
