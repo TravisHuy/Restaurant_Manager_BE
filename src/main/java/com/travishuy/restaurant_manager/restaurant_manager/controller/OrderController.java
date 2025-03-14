@@ -2,10 +2,13 @@ package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
 import com.travishuy.restaurant_manager.restaurant_manager.model.Order;
 import com.travishuy.restaurant_manager.restaurant_manager.model.OrderItem;
+import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.LoginRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderItemRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.OrderRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.OrderResponse;
+import com.travishuy.restaurant_manager.restaurant_manager.service.AuthService;
 import com.travishuy.restaurant_manager.restaurant_manager.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +29,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private AuthService authService;
 
     @PostMapping("/add")
     public ResponseEntity<OrderResponse> createOrder(@RequestBody OrderRequest orderRequest) {
@@ -70,14 +75,17 @@ public class OrderController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/updateStatus/{orderId}")
+    @PutMapping("/updateStatus/{orderId}")
     public ResponseEntity<?> updateOrderStatus(@PathVariable String orderId){
         try{
             OrderResponse response = orderService.updateOrderStatus(orderId);
             return ResponseEntity.ok(response);
-        }
-        catch (RuntimeException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body("Invalid order ID: " + e.getMessage());
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body("Failed to update order status: " + e.getMessage());
         }
     }
+
+
 }

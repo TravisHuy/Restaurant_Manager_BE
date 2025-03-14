@@ -247,7 +247,13 @@ public class OrderServiceImpl implements OrderService{
             Order order = orderRepository.findById(orderId)
                     .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
 
-            order.setStatus(Status.COMPLETED);
+
+            if(order.getStatus() == Status.COMPLETED){
+                throw new IllegalArgumentException("Menu is already completed");
+            }
+            else if(order.getStatus() == Status.IN_PROCESS){
+                order.setStatus(Status.COMPLETED);
+            }
 
             return mapToOrderResponse(orderRepository.save(order));
         }

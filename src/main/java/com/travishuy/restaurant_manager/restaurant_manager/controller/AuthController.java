@@ -4,6 +4,7 @@ import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.LoginR
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.request.SignUpRequest;
 import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.AuthResponse;
 import com.travishuy.restaurant_manager.restaurant_manager.service.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,5 +63,16 @@ public class AuthController {
     @GetMapping("/oauth2/callback/{provider}")
     public ResponseEntity<AuthResponse> oauth2Callback(@PathVariable String provider, @RequestParam String code){
         return ResponseEntity.ok(authService.processOAuth2Login(provider, code));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser(HttpServletRequest request){
+        try{
+            String token = request.getHeader("Authorization");
+            return ResponseEntity.ok(authService.logoutUser(token));
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

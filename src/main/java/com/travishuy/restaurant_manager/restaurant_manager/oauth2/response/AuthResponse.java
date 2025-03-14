@@ -63,4 +63,6 @@ public class AuthResponse {
         this.name = name;
         this.id = id;
     }
+
+
 }

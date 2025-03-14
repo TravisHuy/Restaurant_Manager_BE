@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * A utility class that provides methods for generating and validating JWT tokens.
  *
@@ -34,6 +38,9 @@ public class JwtTokenProvider {
 
     /** Secret key used to sign the JWT token */
     private SecretKey secretKey;
+
+    private Set<String> tokenBlacklist = Collections.synchronizedSet(new HashSet<>());
+
 
     @PostConstruct
     public void init(){
@@ -100,12 +107,15 @@ public class JwtTokenProvider {
      */
     public boolean validateToken(String authToken) {
         try {
+            if(isTokenBlacklisted(authToken)){
+                return false;
+            }
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)
                     .build()
                     .parseClaimsJws(authToken);
-
             return true;
+
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature: {}", ex.getMessage());
         } catch (MalformedJwtException ex) {
@@ -118,5 +128,24 @@ public class JwtTokenProvider {
             log.error("JWT claims string is empty: {}", ex.getMessage());
         }
         return false;
+    }
+
+    /**
+     * Invalidates a JWT token by adding it to the blacklist.
+     *
+     * @param token The token to invalidate
+     */
+    public void invalidateToken(String token) {
+        tokenBlacklist.add(token);
+    }
+
+    /**
+     * Checks if a token is blacklisted (has been invalidated).
+     *
+     * @param token The token to check
+     * @return true if the token is blacklisted, false otherwise
+     */
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklist.contains(token);
     }
 }

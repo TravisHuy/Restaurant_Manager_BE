@@ -155,4 +155,35 @@ public class AuthService {
         user.setRole(Set.of(Role.ROLE_EMPLOYEE));
         return userRepository.save(user);
     }
+
+    /**
+     * Logs out a user by invalidating their tokens.
+     *
+     * @param token The JWT token to invalidate
+     * @return The response confirming successful logout
+     */
+    public AuthResponse logoutUser(String token){
+        try{
+            if(token==null){
+                throw new IllegalArgumentException("Token not found");
+            }
+            String actualToken = token;
+
+            if(token!=null && token.startsWith("Bearer ")){
+                actualToken = token.substring(7);
+            }
+
+            tokenProvider.invalidateToken(actualToken);
+
+            return new AuthResponse(null,
+                    null,"Đăng xuất thành công",
+                    null,null,null,null,null);
+        }
+        catch (Exception e) {
+            if (e instanceof IllegalArgumentException) {
+                throw e;
+            }
+            throw new RuntimeException("Failed to update order status: " + e.getMessage(), e);
+        }
+    }
 }
