@@ -31,6 +31,8 @@ public class AuthResponse {
     private String name;
     /** The id of the user */
     private String id;
+    /** The isAdmin of the user */
+    private boolean isAdmin;
 
     /**
      * Constructs a new AuthResponse with the given parameters.
@@ -54,7 +56,7 @@ public class AuthResponse {
      * @param name The name of the user
      * @param id The id of the user
      */
-    public AuthResponse(String token, String refreshToken, String message, String email, String role, String name, String id) {
+    public AuthResponse(String token, String refreshToken, String message, String email, String role, String name, String id,boolean isAdmin) {
         this.token = token;
         this.refreshToken = refreshToken;
         this.message = message;
@@ -62,6 +64,7 @@ public class AuthResponse {
         this.role = role;
         this.name = name;
         this.id = id;
+        this.isAdmin = isAdmin;
     }
 
 

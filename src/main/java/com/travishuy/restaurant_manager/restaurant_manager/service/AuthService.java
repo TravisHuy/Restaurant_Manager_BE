@@ -70,7 +70,8 @@ public class AuthService {
                 savedUser.getEmail(),
                 savedUser.getRole().toString(),
                 savedUser.getName(),
-                savedUser.getId()
+                savedUser.getId(),
+                false
         );
     }
     /**
@@ -97,7 +98,8 @@ public class AuthService {
                 user.getEmail(),
                 user.getRole().toString(),
                 user.getName(),
-                user.getId()
+                user.getId(),
+                false
         );
     }
     /**
@@ -135,7 +137,8 @@ public class AuthService {
                 user.getEmail(),
                 user.getRole().toString(),
                 user.getName(),
-                user.getId()
+                user.getId(),
+                false
         );
     }
     /**
@@ -177,7 +180,7 @@ public class AuthService {
 
             return new AuthResponse(null,
                     null,"Đăng xuất thành công",
-                    null,null,null,null,null);
+                    null,null,null,null,null,false);
         }
         catch (Exception e) {
             if (e instanceof IllegalArgumentException) {
@@ -185,5 +188,77 @@ public class AuthService {
             }
             throw new RuntimeException("Failed to update order status: " + e.getMessage(), e);
         }
+    }
+    public AuthResponse registerAdmin(SignUpRequest request){
+
+        User currentUser = userRepository.findByEmail(request.getEmail()).orElse(null);
+        if(currentUser != null){
+            throw new RuntimeException("Email đã tồn tại");
+        }
+        if(!currentUser.getAuthorities().contains("ROLE_ADMIN")){
+            throw new RuntimeException("Không có quyền truy cập trang admin");
+        }
+
+        if(userRepository.existsByEmail(request.getEmail())){
+            throw new RuntimeException("Email đã tồn tại");
+        }
+
+        User user = new User();
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setAddress(request.getAddress());
+        user.setRole(Set.of(Role.ROLE_ADMIN));
+        user.setProvider(AuthProvider.LOCAL);
+
+        User savedUser = userRepository.save(user);
+        String token = tokenProvider.generateToken(savedUser);
+        String refreshToken = tokenProvider.generateRefeshToken(savedUser);
+
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Xác thực admin thành công",
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getName(),
+                user.getId(),
+                true
+        );
+    }
+
+    /**
+     * Authenticates an admin user.
+     *
+     * @param request The request to authenticate the admin user
+     * @return The response to the authentication request
+     * @throws RuntimeException if the user does not exist, password is incorrect, or user is not an admin
+     */
+    public AuthResponse authenticateAdmin(LoginRequest request){
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User không tồn tại"));
+        if(!passwordEncoder.matches(request.getPassword(),user.getPassword())){
+            throw new RuntimeException("Mật khẩu không khớp");
+        }
+
+        if (!user.getRole().contains(Role.ROLE_ADMIN)) {
+            throw new RuntimeException("Không có quyền truy cập trang admin");
+        }
+
+        String token = tokenProvider.generateToken(user);
+        String refreshToken = tokenProvider.generateRefeshToken(user);
+
+        return new AuthResponse(
+                token,
+                refreshToken,
+                "Xác thực admin thành công",
+                user.getEmail(),
+                user.getRole().toString(),
+                user.getName(),
+                user.getId(),
+                true
+        );
+
     }
 }

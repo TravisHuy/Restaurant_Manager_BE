@@ -6,6 +6,7 @@ import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.AuthR
 import com.travishuy.restaurant_manager.restaurant_manager.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 /**
@@ -70,6 +71,35 @@ public class AuthController {
         try{
             String token = request.getHeader("Authorization");
             return ResponseEntity.ok(authService.logoutUser(token));
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Authenticates an admin in the system
+     *
+     * @param loginRequest the request object containing the admin credentials
+     * @return ResponseEntity with the authentication response
+     */
+    @PostMapping("/admin/auth")
+    public ResponseEntity<?> authenticateAdmin(@RequestBody LoginRequest loginRequest){
+        try{
+            AuthResponse authResponse = authService.authenticateAdmin(loginRequest);
+            return ResponseEntity.ok(authResponse);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthResponse(null, null, e.getMessage(), null, null, null, null,true));
+        }
+    }
+
+    @PostMapping("/admin/signup")
+    public ResponseEntity<?> registerAdmin(@RequestBody SignUpRequest signUpRequest){
+        try{
+            AuthResponse authResponse = authService.registerAdmin(signUpRequest);
+            return ResponseEntity.ok(authResponse);
         }
         catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
