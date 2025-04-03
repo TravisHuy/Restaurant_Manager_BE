@@ -83,7 +83,7 @@ public class AuthController {
      * @param loginRequest the request object containing the admin credentials
      * @return ResponseEntity with the authentication response
      */
-    @PostMapping("/admin/auth")
+    @PostMapping("/admin/login")
     public ResponseEntity<?> authenticateAdmin(@RequestBody LoginRequest loginRequest){
         try{
             AuthResponse authResponse = authService.authenticateAdmin(loginRequest);
@@ -94,7 +94,12 @@ public class AuthController {
                     .body(new AuthResponse(null, null, e.getMessage(), null, null, null, null,true));
         }
     }
-
+    /**
+     * Registers a new admin in the system
+     *
+     * @param signUpRequest the request object containing the admin details
+     * @return ResponseEntity with the authentication response
+     */
     @PostMapping("/admin/signup")
     public ResponseEntity<?> registerAdmin(@RequestBody SignUpRequest signUpRequest){
         try{

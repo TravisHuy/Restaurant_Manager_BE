@@ -5,6 +5,7 @@ import com.travishuy.restaurant_manager.restaurant_manager.model.Table;
 import com.travishuy.restaurant_manager.restaurant_manager.service.TableService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.Repository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -62,6 +63,17 @@ public class TableController {
         try {
             List<Table> tables = tableService.getTablesFloorById(floorId);
             return ResponseEntity.ok(tables);
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/byOrder/{orderId}")
+    public ResponseEntity<?> getTableByOrderId(@PathVariable String orderId){
+        try {
+            Table table = tableService.getTableByOrderId(orderId);
+            return ResponseEntity.ok(table);
         }
         catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());

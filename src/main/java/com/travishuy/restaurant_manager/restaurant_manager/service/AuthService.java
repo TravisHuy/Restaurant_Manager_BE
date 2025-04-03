@@ -11,6 +11,8 @@ import com.travishuy.restaurant_manager.restaurant_manager.oauth2.response.AuthR
 import com.travishuy.restaurant_manager.restaurant_manager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -191,17 +193,21 @@ public class AuthService {
     }
     public AuthResponse registerAdmin(SignUpRequest request){
 
-        User currentUser = userRepository.findByEmail(request.getEmail()).orElse(null);
-        if(currentUser != null){
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
-        }
-        if(!currentUser.getAuthorities().contains("ROLE_ADMIN")){
-            throw new RuntimeException("Không có quyền truy cập trang admin");
         }
 
-        if(userRepository.existsByEmail(request.getEmail())){
-            throw new RuntimeException("Email đã tồn tại");
-        }
+//        // Get the currently authenticated user (if any)
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        // If we're enforcing that only admins can create other admins,
+//        // uncomment this block and modify as needed
+//
+//        if (authentication != null && authentication.isAuthenticated()
+//                && !authentication.getAuthorities().stream()
+//                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+//            throw new RuntimeException("Không có quyền truy cập tạo tài khoản admin");
+//        }
 
         User user = new User();
         user.setName(request.getName());
@@ -219,7 +225,7 @@ public class AuthService {
         return new AuthResponse(
                 token,
                 refreshToken,
-                "Xác thực admin thành công",
+                "Đăng ký admin thành công",
                 user.getEmail(),
                 user.getRole().toString(),
                 user.getName(),

@@ -71,6 +71,28 @@ public class ReservationService {
     }
 
     /**
+     * Gets a reservation by its ID
+     *
+     * @param reservationId ID of the reservation
+     * @return the reservation if exists
+     */
+    public Reservation getReservation(String reservationId) {
+        try {
+            if (reservationId == null || reservationId.trim().isEmpty()) {
+                throw new IllegalArgumentException("Reservation cannot be null or empty");
+            }
+
+            return reservationRepository.findById(reservationId)
+                    .orElseThrow(() -> new RuntimeException("Reservation not found with ID: " + reservationId));
+        } catch (IllegalArgumentException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve Id: " + e.getMessage(), e);
+        }
+    }
+
+
+    /**
      * gets the active reservation for a table
      *
      * @param tableId ID of the table

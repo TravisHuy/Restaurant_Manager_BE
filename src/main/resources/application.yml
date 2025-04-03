@@ -20,7 +20,6 @@ spring:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
             scope: user:email
-
 jwt:
   secret: dBF9k6ffpPKOgylzlE6vV9gzIJz7bVjbdF3L5G8zWxhT9kY2mN4qRcX7pS8wQ1aH3jK5nM9tR6vU4bX7cE0iY2wQ5sG8mP3fD4vJ7kL9nB2mX5tA
   expiration: 86400000  # 24 hours in milliseconds

@@ -47,4 +47,13 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<?> getReservationById(@PathVariable String reservationId){
+        try {
+            return ResponseEntity.ok(reservationService.getReservation(reservationId));
+        }
+        catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
