@@ -1,5 +1,6 @@
 package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
+import com.travishuy.restaurant_manager.restaurant_manager.model.Invoice;
 import com.travishuy.restaurant_manager.restaurant_manager.model.PaymentMethod;
 import com.travishuy.restaurant_manager.restaurant_manager.service.InvoiceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,6 +38,28 @@ public class InvoiceController {
             return ResponseEntity.ok(invoiceService.getAllInvoices());
         }catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Get invoices by payment method
+    @GetMapping("/payment/{method}")
+    public ResponseEntity<?> getInvoicesByPaymentMethod(@PathVariable String method){
+        try {
+            PaymentMethod paymentMethod = PaymentMethod.valueOf(method.toUpperCase());
+            return ResponseEntity.ok(invoiceService.getInvoicesByPaymentMethod(paymentMethod));
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Search invoices
+    @GetMapping("/search")
+    public ResponseEntity<List<Invoice>> searchInvoices(@RequestParam String query) {
+        try {
+            List<Invoice> invoices = invoiceService.searchInvoices(query);
+            return ResponseEntity.ok(invoices);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.travishuy.restaurant_manager.restaurant_manager.model.Invoice;
 import com.travishuy.restaurant_manager.restaurant_manager.model.PaymentMethod;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.InvoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -58,5 +59,24 @@ public interface InvoiceService {
      */
     double calculateRevenue(LocalDateTime startDate, LocalDateTime endDate);
 
+    /**
+     * Get all invoices with pagination support
+     * @param pageable pagination information
+     * @return list of invoices with pagination
+     */
+    List<Invoice> getAllInvoicesWithPagination(Pageable pageable);
 
+    /**
+     * Get all invoices by payment method
+     * @param paymentMethod payment method to filter invoices
+     * @return list of invoices with the specified payment method
+     */
+    List<Invoice> getInvoicesByPaymentMethod(PaymentMethod paymentMethod);
+
+    /**
+     * Get all invoices by date range
+     * @param query date range to filter invoices
+     * @return list of invoices within the specified date range
+     */
+    List<Invoice> searchInvoices(String query);
 }

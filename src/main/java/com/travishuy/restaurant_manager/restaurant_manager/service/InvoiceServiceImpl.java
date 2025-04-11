@@ -5,11 +5,14 @@ import com.travishuy.restaurant_manager.restaurant_manager.repository.InvoiceRep
 import com.travishuy.restaurant_manager.restaurant_manager.repository.OrderRepository;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class InvoiceServiceImpl implements InvoiceService {
@@ -80,5 +83,32 @@ public class InvoiceServiceImpl implements InvoiceService {
     @Override
     public double calculateRevenue(LocalDateTime startDate, LocalDateTime endDate) {
         return 0;
+    }
+
+    @Override
+    public List<Invoice> getAllInvoicesWithPagination(Pageable pageable) {
+        return invoiceRepository.findAll(pageable).getContent();
+    }
+
+    @Override
+    public List<Invoice> getInvoicesByPaymentMethod(PaymentMethod paymentMethod) {
+        return invoiceRepository.findByPaymentMethod(paymentMethod);
+    }
+
+    @Override
+    public List<Invoice> searchInvoices(String query) {
+        if(query == null || query.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        List<Invoice> byId = invoiceRepository.findByIdContainingIgnoreCase(query);
+
+        List<Invoice> byOrderId = invoiceRepository.findByOrderIdContainingIgnoreCase(query);
+
+        return byId.stream()
+                .distinct()
+                .filter(invoice -> !byOrderId.contains(invoice))
+                .collect(Collectors.toList());
+
     }
 }

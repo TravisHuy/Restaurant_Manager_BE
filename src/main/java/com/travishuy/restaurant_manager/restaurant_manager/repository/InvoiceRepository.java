@@ -31,4 +31,18 @@ public interface InvoiceRepository extends MongoRepository<Invoice, String> {
      * @return List of invoices created within the date range
      */
     List<Invoice> findByPaymentTimeBetween(LocalDateTime startDate, LocalDateTime endDate);
+
+    /**
+     * Find invoices by their ID
+     * @param id the ID of the invoice
+     * @return List of invoices with IDs containing the specified string
+     */
+    List<Invoice> findByIdContainingIgnoreCase(String id);
+
+    /**
+     * Find invoices by their order ID
+     * @param orderId the ID of the order
+     * @return List of invoices with order IDs containing the specified string
+     */
+    List<Invoice> findByOrderIdContainingIgnoreCase(String orderId);
 }
