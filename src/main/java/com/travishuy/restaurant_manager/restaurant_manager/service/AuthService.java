@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -266,5 +267,21 @@ public class AuthService {
                 true
         );
 
+    }
+    /**
+     * Retrieves all users in the system.
+     *
+     * @return List of all users
+     */
+    public List<User> getAllUsers(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if(authentication !=null && authentication.isAuthenticated() && !authentication.getAuthorities().stream()
+                .anyMatch(a->a.getAuthority().equals("ROLE_ADMIN"))
+        )
+        {
+            throw new RuntimeException("Không có quyền truy cập danh sách người dùng");
+        }
+        return userRepository.findAll();
     }
 }

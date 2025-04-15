@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 /**
  * Controller class for handling authentication requests
@@ -105,6 +106,22 @@ public class AuthController {
         try{
             AuthResponse authResponse = authService.registerAdmin(signUpRequest);
             return ResponseEntity.ok(authResponse);
+        }
+        catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Retrieves all users in the system
+     *
+     * @return ResponseEntity with the list of users
+     */
+    @GetMapping("/all/users")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<?> getAllUsers(){
+        try{
+            return ResponseEntity.ok(authService.getAllUsers());
         }
         catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
