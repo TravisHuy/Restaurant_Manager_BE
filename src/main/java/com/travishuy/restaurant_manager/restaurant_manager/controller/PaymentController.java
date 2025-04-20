@@ -92,7 +92,7 @@ public class PaymentController {
     /**
      * Tao Qr code thanh toan VNPay
      */
-    @PostMapping("/vnpay/qr/{orderId}")
+    @PostMapping("/vnpay/paymentTest/qr/{orderId}")
     public ResponseEntity<?> createVnPayTestQrPayment(@PathVariable String orderId, HttpServletRequest request){
         try{
             Order order = orderService.getOrderId(orderId);
