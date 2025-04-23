@@ -31,6 +31,15 @@ public interface InvoiceService {
     Invoice createInvoice(String orderId, double totalAmount, PaymentMethod paymentMethod);
 
     /**
+     * Create a new invoice provisional for an order
+     * @param orderId ID of the order to create invoice for
+     * @param totalAmount total amount to be paid
+     * @param paymentMethod method of payment
+     * @return the newly created invoice
+     */
+    Invoice createInvoiceProvisional(String orderId, double totalAmount, PaymentMethod paymentMethod);
+
+    /**
      * Get all invoices in the system
      *
      * @return list of all invoices

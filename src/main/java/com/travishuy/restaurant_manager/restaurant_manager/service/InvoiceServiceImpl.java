@@ -38,8 +38,8 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         Order order = orderOptional.get();
 
-        if(order.getStatus() != Status.COMPLETED) {
-            throw new IllegalStateException("Order must be completed before creating invoice");
+        if(order.getStatus() != Status.IN_PROCESS) {
+            throw new IllegalStateException("Order must be in process before creating invoice");
         }
 
         Invoice invoice = new Invoice();
@@ -48,7 +48,7 @@ public class InvoiceServiceImpl implements InvoiceService {
         invoice.setPaymentTime(LocalDateTime.now());
         invoice.setPaymentMethod(paymentMethod);
 
-        order.setStatus(Status.PAID);
+        order.setStatus(Status.COMPLETED);
 
         String tableId = order.getTableId();
         if(tableId!=null && !tableId.isEmpty()) {
@@ -64,6 +64,48 @@ public class InvoiceServiceImpl implements InvoiceService {
 
         return invoiceRepository.save(invoice);
     }
+
+    @Override
+    public Invoice createInvoiceProvisional(String orderId, double totalAmount, PaymentMethod paymentMethod) {
+        Optional<Order> orderOptional = orderRepository.findById(orderId);
+
+        if(orderOptional.isEmpty()) {
+            throw new IllegalArgumentException("Order not found with ID: " + orderId);
+        }
+        Optional<Invoice> existingInvoice = invoiceRepository.findByOrderId(orderId);
+        if (existingInvoice.isPresent()) {
+            throw new IllegalStateException("Invoice already exists for order ID: " + orderId);
+        }
+
+        Order order = orderOptional.get();
+
+        if(order.getStatus() != Status.IN_PROCESS) {
+            throw new IllegalStateException("Order must be in process before creating invoice");
+        }
+
+        Invoice invoice = new Invoice();
+        invoice.setOrderId(orderId);
+        invoice.setTotalAmount(totalAmount);
+        invoice.setPaymentTime(LocalDateTime.now());
+        invoice.setPaymentMethod(paymentMethod);
+
+        order.setStatus(Status.PROVISIONAL);
+
+        String tableId = order.getTableId();
+        if(tableId!=null && !tableId.isEmpty()) {
+            Optional<Table> tableOptional = tableRepository.findById(tableId);
+            if(tableOptional.isPresent()){
+                Table table  = tableOptional.get();
+                table.setAvailable(true);
+                table.setReservationId(null);
+                table.setOrderId(null);
+                tableRepository.save(table);
+            }
+        }
+
+        return invoiceRepository.save(invoice);
+    }
+
 
     @Override
     public List<Invoice> getAllInvoices() {
