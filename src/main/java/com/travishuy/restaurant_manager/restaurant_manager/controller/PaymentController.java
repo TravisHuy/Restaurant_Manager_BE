@@ -66,11 +66,11 @@ public class PaymentController {
     public ResponseEntity<?> createVnPayQrPayment(@PathVariable String orderId, HttpServletRequest request){
         try{
             Order order = orderService.getOrderId(orderId);
-            if(order.getStatus() != Status.CANCELLED){
+            if(order.getStatus() == Status.CANCELLED){
                 return ResponseEntity.badRequest().body("Don hang chua hoan thanh , khong the thanh toan");
             }
             String ipAddress = request.getRemoteAddr();
-            String paymentUrl = vnPayService.createPaymentUrl(order,ipAddress);
+            String paymentUrl = vnPayService.createQrPaymentUrl(order,ipAddress);
 
             String qrCodeImage = qrCodeGenerator.generateQrCodeBase64(paymentUrl,300,300);
 
@@ -100,7 +100,7 @@ public class PaymentController {
                 return ResponseEntity.badRequest().body("Don hang chua hoan thanh , khong the thanh toan");
             }
             String ipAddress = request.getRemoteAddr();
-            String paymentUrl = vnPayService.createPaymentUrl(order,ipAddress);
+            String paymentUrl = vnPayService.createTestPaymentUrl(order,ipAddress);
 
             Map<String , Object> response = new HashMap<>();
             response.put("paymentUrl", paymentUrl);

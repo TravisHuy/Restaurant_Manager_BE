@@ -32,6 +32,20 @@ public class InvoiceController {
         }
     }
 
+    @PostMapping("/add/provisional")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
+    public ResponseEntity<?> createInvoiceProvisional(@RequestBody Map<String,Object> payload){
+        try {
+            String orderId = (String) payload.get("orderId");
+            double totalAmount = (double) payload.get("totalAmount");
+            PaymentMethod paymentMethod = PaymentMethod.valueOf((String) payload.get("paymentMethod"));
+            return ResponseEntity.ok(invoiceService.createInvoiceProvisional(orderId, totalAmount, paymentMethod));
+        }catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     @GetMapping("/all")
     public ResponseEntity<?> getAllInvoices(){
         try {

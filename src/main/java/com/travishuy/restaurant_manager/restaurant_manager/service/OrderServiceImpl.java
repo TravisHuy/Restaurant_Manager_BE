@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService{
         order.setTableId(orderRequest.getTableId());
         order.setOrderItemIds(Collections.singletonList(savedOrderItem.getId()));
         order.setOrderTime(LocalDateTime.now());
-        order.setStatus(Status.IN_PROCESS);
+        order.setStatus(Status.PENDING);
         order.setTotalAmount(savedOrderItem.getTotalPrice());
 
         Order savedOrder = orderRepository.save(order);
@@ -248,11 +248,11 @@ public class OrderServiceImpl implements OrderService{
                     .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
 
 
-            if(order.getStatus() == Status.COMPLETED){
+            if(order.getStatus() == Status.IN_PROCESS){
                 throw new IllegalArgumentException("Menu is already completed");
             }
-            else if(order.getStatus() == Status.IN_PROCESS){
-                order.setStatus(Status.COMPLETED);
+            else if(order.getStatus() == Status.PENDING){
+                order.setStatus(Status.IN_PROCESS);
             }
 
             return mapToOrderResponse(orderRepository.save(order));
