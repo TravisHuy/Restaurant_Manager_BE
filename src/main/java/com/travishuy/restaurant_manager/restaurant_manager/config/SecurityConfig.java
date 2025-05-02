@@ -74,6 +74,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/reservations/**").permitAll()
                         .requestMatchers("/api/orderItems/**").permitAll()
                         .requestMatchers("/api/invoices/**").permitAll()
+                        .requestMatchers("/api/admin/notifications/**").hasAnyAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(customUserDetailsService)

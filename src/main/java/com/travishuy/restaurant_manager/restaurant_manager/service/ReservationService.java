@@ -27,6 +27,9 @@ public class ReservationService {
     @Autowired
     TableRepository tableRepository;
 
+    @Autowired
+    AdminNotificationService adminNotificationService;
+
     public Reservation addReservation(String tableId, ReservationDTO reservationDTO){
         Table table =  tableRepository.findById(tableId).orElseThrow(()-> new IllegalArgumentException("Not found table Id"));
 
@@ -51,6 +54,7 @@ public class ReservationService {
         table.setReservationId(reservation.getId());
         tableRepository.save(table);
 
+        adminNotificationService.notifyReservationCreated(reservation);
 
         return reservation;
     }

@@ -21,4 +21,13 @@ public interface AdminNotificationRepository extends MongoRepository<AdminNotifi
      * @return a list of notifications with the specified type
      */
     List<AdminNotification> findByType(String type);
+
+
+    /**
+     * Find all notifications by their read status false
+     *
+     * @return a list of notifications with the specified read false
+     */
+    List<AdminNotification> findByReadFalse();
+
 }
