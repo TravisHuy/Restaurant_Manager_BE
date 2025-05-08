@@ -1,6 +1,7 @@
 package com.travishuy.restaurant_manager.restaurant_manager.repository;
 
 import com.travishuy.restaurant_manager.restaurant_manager.model.AdminNotification;
+import com.travishuy.restaurant_manager.restaurant_manager.model.NotificationType;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
@@ -29,5 +30,9 @@ public interface AdminNotificationRepository extends MongoRepository<AdminNotifi
      * @return a list of notifications with the specified read false
      */
     List<AdminNotification> findByReadFalse();
+
+
+    List<AdminNotification> findByReadFalseOrderByTimestampDesc();
+    List<AdminNotification> findByTypeOrderByTimestampDesc(NotificationType type);
 
 }

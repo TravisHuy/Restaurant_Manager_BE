@@ -1,6 +1,7 @@
 package com.travishuy.restaurant_manager.restaurant_manager.service;
 
 import com.travishuy.restaurant_manager.restaurant_manager.dto.ReservationDTO;
+import com.travishuy.restaurant_manager.restaurant_manager.model.NotificationType;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Reservation;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Table;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.ReservationRepository;
@@ -28,7 +29,7 @@ public class ReservationService {
     TableRepository tableRepository;
 
     @Autowired
-    AdminNotificationService adminNotificationService;
+    NotificationService notificationService;
 
     public Reservation addReservation(String tableId, ReservationDTO reservationDTO){
         Table table =  tableRepository.findById(tableId).orElseThrow(()-> new IllegalArgumentException("Not found table Id"));
@@ -54,7 +55,13 @@ public class ReservationService {
         table.setReservationId(reservation.getId());
         tableRepository.save(table);
 
-        adminNotificationService.notifyReservationCreated(reservation);
+        notificationService.createNotification(
+                "New Reservation",
+                "Table " + table.getNumber() + " reserved for " + reservationDTO.getNumberOfPeople() +
+                        " people by " + reservationDTO.getCustomerName(),
+                NotificationType.RESERVATION,
+                reservation.getId()
+        );
 
         return reservation;
     }

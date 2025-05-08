@@ -24,8 +24,8 @@ public class AdminNotificationService {
     @Autowired
     private AdminNotificationRepository notificationRepository;
 
-    @Autowired
-    private KafkaTemplate<String, AdminNotification> kafkaTemplate;
+//    @Autowired
+//    private KafkaTemplate<String, AdminNotification> kafkaTemplate;
 
     private static final String TOPIC = "admin-notifications";
 
@@ -50,7 +50,7 @@ public class AdminNotificationService {
 
         AdminNotification savedNotification = notificationRepository.save(notification);
 
-        kafkaTemplate.send(TOPIC,savedNotification);
+//        kafkaTemplate.send(TOPIC,savedNotification);
 
     }
 
@@ -73,6 +73,6 @@ public class AdminNotificationService {
 
         AdminNotification saveNotification = notificationRepository.save(notification);
 
-        kafkaTemplate.send(TOPIC,saveNotification);
+//        kafkaTemplate.send(TOPIC,saveNotification);
     }
 }

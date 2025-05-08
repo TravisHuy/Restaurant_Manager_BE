@@ -9,7 +9,6 @@ import com.travishuy.restaurant_manager.restaurant_manager.service.InvoiceServic
 import com.travishuy.restaurant_manager.restaurant_manager.service.OrderService;
 import com.travishuy.restaurant_manager.restaurant_manager.service.VnPayService;
 import com.travishuy.restaurant_manager.restaurant_manager.util.QrCodeGenerator;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
