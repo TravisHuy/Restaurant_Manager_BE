@@ -43,7 +43,7 @@ public class AdminNotificationService {
         AdminNotification notification = new AdminNotification();
         notification.setTitle(title);
         notification.setMessage(message);
-        notification.setType(NotificationType.PAYMENT);
+        notification.setType(NotificationType.PAYMENT_RECEIVED);
         notification.setRelatedId(invoice.getId());
         notification.setRead(false);
         notification.setTimestamp(LocalDateTime.now());
@@ -66,7 +66,7 @@ public class AdminNotificationService {
         AdminNotification notification = new AdminNotification();
         notification.setTitle("Đặt bàn mới");
         notification.setMessage(message);
-        notification.setType(NotificationType.RESERVATION);
+        notification.setType(NotificationType.NEW_RESERVATION);
         notification.setRelatedId(reservation.getId());
         notification.setRead(false);
         notification.setTimestamp(LocalDateTime.now());

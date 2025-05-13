@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @since 16-04-2025
  * @author TravisHuy
  */
-@Document(collection = "notifications")
+@Document(collection = "admin_notifications")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,9 +1,11 @@
 package com.travishuy.restaurant_manager.restaurant_manager.service;
 
 import com.travishuy.restaurant_manager.restaurant_manager.dto.ReservationDTO;
+import com.travishuy.restaurant_manager.restaurant_manager.model.Floor;
 import com.travishuy.restaurant_manager.restaurant_manager.model.NotificationType;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Reservation;
 import com.travishuy.restaurant_manager.restaurant_manager.model.Table;
+import com.travishuy.restaurant_manager.restaurant_manager.repository.FloorRepository;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.ReservationRepository;
 import com.travishuy.restaurant_manager.restaurant_manager.repository.TableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,14 @@ public class ReservationService {
     TableRepository tableRepository;
 
     @Autowired
+    FloorRepository floorRepository;
+
+    @Autowired
     NotificationService notificationService;
 
     public Reservation addReservation(String tableId, ReservationDTO reservationDTO){
         Table table =  tableRepository.findById(tableId).orElseThrow(()-> new IllegalArgumentException("Not found table Id"));
+        Floor floor = floorRepository.findById(table.getFloorId()).orElseThrow(()-> new IllegalArgumentException("Not found floor Id"));
 
         if(!table.isAvailable()){
             throw  new IllegalArgumentException("The table is reserved");
@@ -55,11 +61,12 @@ public class ReservationService {
         table.setReservationId(reservation.getId());
         tableRepository.save(table);
 
-        notificationService.createNotification(
-                "New Reservation",
-                "Table " + table.getNumber() + " reserved for " + reservationDTO.getNumberOfPeople() +
-                        " people by " + reservationDTO.getCustomerName(),
-                NotificationType.RESERVATION,
+        String title = "Table Number " + table.getNumber() + " "+ floor.getName() + " Reserved";
+
+        notificationService.notifyNewReservation(
+                title,
+                reservationDTO.getCustomerName(),
+                reservationDTO.getNumberOfPeople(),
                 reservation.getId()
         );
 

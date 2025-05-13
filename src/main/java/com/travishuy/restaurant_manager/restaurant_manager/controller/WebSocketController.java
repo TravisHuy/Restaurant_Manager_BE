@@ -9,26 +9,26 @@ import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
-@Controller
-public class WebSocketController {
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @MessageMapping("/notifications/mark-read")
-    public void markNotificationAsRead(String notificationId) {
-        notificationService.markAsRead(notificationId);
-    }
-
-    @MessageMapping("/notifications/get-unread")
-    @SendTo("/topic/unread-notifications")
-    public List<AdminNotification> getUnreadNotifications() {
-        return notificationService.getUnreadNotifications();
-    }
-
-    @MessageMapping("/notifications/all")
-    @SendTo("/topic/all-notifications")
-    public List<AdminNotification> getAllNotifications() {
-        return notificationService.getAllNotifications();
-    }
-}
+//@Controller
+//public class WebSocketController {
+//
+//    @Autowired
+//    private NotificationService notificationService;
+//
+//    @MessageMapping("/notifications/mark-read")
+//    public void markNotificationAsRead(String notificationId) {
+//        notificationService.markAsRead(notificationId);
+//    }
+//
+//    @MessageMapping("/notifications/get-unread")
+//    @SendTo("/topic/unread-notifications")
+//    public List<AdminNotification> getUnreadNotifications() {
+//        return notificationService.getUnreadNotifications();
+//    }
+//
+//    @MessageMapping("/notifications/all")
+//    @SendTo("/topic/all-notifications")
+//    public List<AdminNotification> getAllNotifications() {
+//        return notificationService.getAllNotifications();
+//    }
+//}
