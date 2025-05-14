@@ -1,8 +1,6 @@
 package com.travishuy.restaurant_manager.restaurant_manager.controller;
 
-import com.travishuy.restaurant_manager.restaurant_manager.model.AdminNotification;
-import com.travishuy.restaurant_manager.restaurant_manager.model.Notification;
-import com.travishuy.restaurant_manager.restaurant_manager.model.Role;
+import com.travishuy.restaurant_manager.restaurant_manager.model.*;
 import com.travishuy.restaurant_manager.restaurant_manager.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -97,4 +95,21 @@ public class NotificationController {
     public ResponseEntity<List<Notification>> getNotificationsForEntity(@PathVariable String entityId) {
         return ResponseEntity.ok(notificationService.getNotificationsForEntity(entityId));
     }
+
+    /**
+     * Admin endpoint to create a custom notification
+     */
+    @PostMapping("/admin/create")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Notification> createAdminNotification(@RequestBody AdminNotificationRequest request) {
+        Notification notification = notificationService.createNotification(
+                request.getTitle(),
+                request.getMessage(),
+                request.getType() != null ? request.getType() : NotificationType.ADMIN_NOTIFICATION,
+                request.getRelatedId(),
+                request.getRecipientRoles()
+        );
+        return ResponseEntity.ok(notification);
+    }
+
 }

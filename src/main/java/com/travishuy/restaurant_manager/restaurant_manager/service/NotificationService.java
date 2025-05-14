@@ -97,6 +97,22 @@ public class NotificationService {
         return notificationRepository.findByRelatedIdOrderByTimestampDesc(relatedId);
     }
 
+
+    /**
+     * Create and send a custom notification from admin
+     */
+    public Notification createAdminNotification(String title, String message,
+                                                String relatedId, Set<Role> recipientRoles) {
+        log.info("Creating admin notification: {} for roles: {}", title, recipientRoles);
+
+        return createNotification(
+                title,
+                message,
+                NotificationType.ADMIN_NOTIFICATION,
+                relatedId,
+                recipientRoles
+        );
+    }
     /**
      * Helper method to create a notification for a new reservation
      */
